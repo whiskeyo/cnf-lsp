@@ -1,0 +1,49 @@
+{
+  "name": "cnf-lsp",
+  "description": "LSP for Wireshark Conformance Files",
+  "author": "Tomasz Woszczynski <duchowe50k@gmail.com>",
+  "license": "MIT",
+  "version": "0.0.1",
+  "publisher": "whiskeyo",
+  "categories": [],
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "activationEvents": [
+    "onLanguage"
+  ],
+  "main": "./client/out/extension",
+  "contributes": {
+    "configuration": {},
+    "languages": [
+      {
+        "id": "cnf",
+        "aliases": [
+          "Wireshark Conformance File",
+          "cnf"
+        ],
+        "extensions": [
+          ".cnf"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "cnf",
+        "scopeName": "source.cnf",
+        "path": "./syntaxes/cnf.json"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -b",
+    "watch": "tsc -b -w",
+    "postinstall": "cd client && npm install && cd ../server && npm install && cd .."
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.7",
+    "typescript": "^5.2.2"
+  }
+}

@@ -14,7 +14,7 @@
       "include": "#numeric"
     },
     {
-      "begin": "^#\\.END",
+      "begin": "^#\\.(END|END_OF_CNF)$",
       "end": "$",
       "name": "keyword.control.cnf.end",
       "patterns": [
@@ -146,7 +146,7 @@
       ]
     },
     {
-      "begin": "^#\\.(FIELD|TYPE)_RENAME$",
+      "begin": "^#\\.(FIELD|TYPE|TF)_RENAME$",
       "end": "^(?=#\\..*)",
       "name": "keyword.control.cnf.field_type_rename",
       "patterns": [

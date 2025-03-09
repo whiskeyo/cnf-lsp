@@ -1,0 +1,363 @@
+# Reference: https://www.wireshark.org/docs/wsdg_html_chunked/ASN1ConformanceFileDirectiveReference.html#ASN1CnfDirectiveEND
+# And multiple *.cnf files from Wireshark sources
+
+################################################################################
+# #.INCLUDE and #.IMPORT DIRECTIVES                                            #
+################################################################################
+#.INCLUDE ../some/path/to/another.cnf
+#.IMPORT ../as/above.cnf
+
+################################################################################
+# #.TYPE_RENAME DIRECTIVE                                                      #
+################################################################################
+#.TYPE_RENAME
+AARQ-apdu/_untag/protocol-version	T_AARQ_protocol_version
+
+################################################################################
+# #.FIELD_RENAME DIRECTIVE                                                     #
+################################################################################
+#.FIELD_RENAME
+AARQ-apdu/_untag/user-information	aARQ_user_information
+
+################################################################################
+# #.TF_RENAME DIRECTIVE                                                        #
+################################################################################
+#.TF_RENAME
+IdmBind/argument	bind_argument # field rename (starting with lowercase)
+InitiatingMessage/value    InitiatingMessage_value # type rename (starting with uppercase)
+
+################################################################################
+# #.OPT DIRECTIVE                                                              #
+################################################################################
+#.OPT # it has to end with #.END directive
+PER
+ALIGNED
+-b # support also this kind of compiler arguments
+-o gsm_map
+#.END
+
+################################################################################
+# #.PDU DIRECTIVE                                                              #
+################################################################################
+#.PDU
+AARE-apdu
+OPERATION.&ArgumentType
+AccessPoint
+
+################################################################################
+# #.REGISTER DIRECTIVE                                                         #
+################################################################################
+#.REGISTER
+AsymmetricKeyPackage B "2.16.840.1.101.2.1.2.78.5" "id-ct-KP-aKeyPackage"
+ModificationParameter	S dop.oid	"modify.roleb.2.5.19.1"
+
+################################################################################
+# #.MODULE DIRECTIVE                                                           #
+################################################################################
+#.MODULE
+CS1-DataTypes  inap
+Attribute-ASN1Module cmip.x721
+
+################################################################################
+# #.MODULE_IMPORT DIRECTIVE                                                    #
+################################################################################
+#.MODULE_IMPORT
+CryptographicMessageSyntax-2009 cms
+AlgorithmInformation-2009 x509af
+
+################################################################################
+# #.OMIT_ASSIGNMENT DIRECTIVE                                                  #
+################################################################################
+#.OMIT_ASSIGNMENT
+CommonArguments
+Something-ReallyCanBe-There
+
+################################################################################
+# #.VIRTUAL_ASSGN DIRECTIVE                                                    #
+################################################################################
+#.VIRTUAL_ASSGN
+H245Control  H323-UU-PDU/h245Control
+ParallelH245Control  Setup-UUIE/parallelH245Control
+
+################################################################################
+# #.SET_TYPE DIRECTIVE                                                         #
+################################################################################
+#.SET_TYPE
+AdmissionRequest/destinationInfo  DestinationInfo
+AdmissionConfirm/destinationInfo  DestinationInfo
+
+################################################################################
+# #.ASSIGN_VALUE_TO_TYPE DIRECTIVE                                             #
+################################################################################
+#.ASSIGN_VALUE_TO_TYPE
+psid-system                       Psid
+psid-electronic-fee-collection    Psid
+
+################################################################################
+# #.IMPORT_TAG DIRECTIVE                                                       #
+################################################################################
+#.IMPORT_TAG
+AuthorityInfoAccessSyntax BER_CLASS_UNI BER_UNI_TAG_SEQUENCE
+GeneralName              BER_CLASS_CON -1/*choice*/
+KeyIdentifier            BER_CLASS_UNI BER_UNI_TAG_OCTETSTRING
+
+################################################################################
+# #.TYPE_ATTR DIRECTIVE                                                        #
+################################################################################
+#.TYPE_ATTR
+DRB-Usage-Report-Item/usageCountUL DISPLAY=BASE_DEC|BASE_UNIT_STRING STRINGS=UNS(&units_octet_octets)
+DateAndTime	TYPE = FT_STRING DISPLAY = BASE_NONE
+Code/local TYPE = FT_INT32  DISPLAY = BASE_DEC  STRINGS = VALS(camel_opr_code_strings)
+
+################################################################################
+# #.FIELD_ATTR DIRECTIVE                                                       #
+################################################################################
+#.FIELD_ATTR
+Attribute/id ABBREV=attributeid
+FilterItem/present ABBREV=filterItempresent
+IECGoosePdu/stNum  TYPE = FT_UINT32  DISPLAY = BASE_DEC
+IECGoosePdu/sqNum  TYPE = FT_UINT32  DISPLAY = BASE_DEC
+IECGoosePdu/simulation BLURB = "BOOLEAN"
+
+################################################################################
+# #.SYNTAX DIRECTIVE                                                           #
+################################################################################
+#.SYNTAX
+ORAddress
+ORName
+SyntaxUniversalString "UniversalString"
+SyntaxUTF8String "UTF8String"
+
+################################################################################
+# #.OMIT_ASSIGNMENTS_EXCEPT DIRECTIVE                                          #
+################################################################################
+#.OMIT_ASSIGNMENTS_EXCEPT  MAP-LCS-DataTypes
+Ext-GeographicalInformation
+maxExt-GeographicalInformation
+
+################################################################################
+# #.EXPORTS DIRECTIVE                                                          #
+################################################################################
+#.EXPORTS
+EXTERNALt
+AE-title
+AP-title
+AP-invocation-identifier
+
+################################################################################
+# #.MODULE_EXPORTS DIRECTIVE                                                   #
+################################################################################
+#.MODULE_EXPORTS
+RasMessage  EXTERN WS_DLL
+AliasAddress      NO_PROT_PREFIX
+NonStandardParameter
+
+# this is another version of #.MODULE_EXPORTS, probably all items get EXTERN WS_DLL assigned?
+#.MODULE_EXPORTS EXTERN WS_DLL
+Certificate
+
+################################################################################
+# #.NO_EMIT DIRECTIVE                                                          #
+################################################################################
+
+# #.NO_EMIT supports: empty value, WITH_VALS, WITHOUT_VALS, ONLY_VALS
+#.NO_EMIT ONLY_VALS
+ACSE-apdu
+
+#.NO_EMIT
+InvokeData
+ReturnData
+
+#.NO_EMIT WITHOUT_VALS
+# Just keep the vals. hf are made manually and used in cause/subcause decoding
+
+################################################################################
+# #.MAKE_ENUM AND #.MAKE_DEFINES DIRECTIVES                                    #
+################################################################################
+
+# #.MAKE_ENUM values support: NO_PROT_PREFIX, PROT_PREFIX, NO_TYPE_PREFIX,
+# TYPE_PREFIX, UPPER_CASE, NO_UPPER_CASE
+
+#.MAKE_ENUM
+ProcedureCode
+ProtocolIE-ID
+
+#.MAKE_ENUM
+RequestMessage     TYPE_PREFIX
+ResponseMessage    TYPE_PREFIX
+AUTHDATA-TYPE PROT_PREFIX UPPER_CASE
+
+# #.MAKE_DEFINES values support the same stuff as #.MAKE_ENUM
+#.MAKE_DEFINES
+ADDR-TYPE TYPE_PREFIX
+Applications TYPE_PREFIX
+
+################################################################################
+# #.USE_VALS_EXT DIRECTIVE                                                     #
+################################################################################
+#.USE_VALS_EXT
+CauseRadioNetwork
+ProcedureCode
+ProtocolIE-ID
+
+################################################################################
+# #.FN_HDR DIRECTIVE                                                           #
+################################################################################
+#.FN_HDR ReturnError
+    ansi_tcap_private.d.pdu = 3;
+
+#.FN_HDR PackageType/unidirectional
+    gp_tcapsrt_info->ope=TC_ANSI_ALL;
+    col_set_str(actx->pinfo->cinfo, COL_INFO, "unidirectional ");
+
+#.FN_HDR Invoke
+  camel_opcode_type=CAMEL_OPCODE_INVOKE;
+
+#.END
+# line above is just to fix the problem with syntax highlighting :<
+
+################################################################################
+# #.FN_FTR DIRECTIVE                                                           #
+################################################################################
+# Multiple examples provided, as they vary from a single line stuff to more complex ones
+
+#.FN_FTR EncryptedData
+  PBE_decrypt_data(dissect_PrivateKeyInfo_PDU, "PrivateKeyInfo",
+    encrypted_tvb, actx->pinfo, actx, actx->created_item);
+
+#.FN_FTR OperationCode
+  ansi_tcap_private.d.OperationCode_item = actx->created_item;
+
+#.FN_FTR EncryptedContent
+  struct cms_private_data *cms_data = cms_get_private_data(actx->pinfo);
+  const char *oid_name = oid_resolved_from_string(
+    actx->pinfo->pool, cms_data->object_identifier_id);
+
+  item = actx->created_item;
+
+  PBE_decrypt_data(
+    cms_dissect_by_last_oid,
+    oid_name ? oid_name : cms_data->object_identifier_id,
+    encrypted_tvb, actx->pinfo, actx, item);
+
+#.FN_FTR ProtocolIE-ID
+  if (tree) {
+    proto_item_append_text(proto_item_get_parent_nth(actx->created_item, 2), ": %s",
+                           val_to_str_ext(e2ap_data->protocol_ie_id, &e2ap_ProtocolIE_ID_vals_ext, "unknown (%d)"));
+  }
+
+#.FN_FTR H323-UU-PDU/h323-message-body/empty
+  h225_pi = (h225_packet_info*)p_get_proto_data(actx->pinfo->pool, actx->pinfo, proto_h225, 0);
+  if (h225_pi != NULL) {
+    h225_pi->cs_type = H225_EMPTY;
+  }
+
+#.END
+# line above is just to fix the problem with syntax highlighting :<
+
+################################################################################
+# #.FN_BODY DIRECTIVE                                                          #
+################################################################################
+# Again multiple examples, here we can see that the directive can be used as a simple
+# "function body" setter, but it also may take some arguments, such as VAL_PTR = &parameter_tvb
+#.FN_BODY ReturnError/parameter
+  offset = dissect_returnErrorData(tree, tvb, offset, actx);
+
+#.FN_BODY EXTERNALt/_untag/direct-reference
+%(DEFAULT_BODY)s
+    actx->external.direct_ref_present = (actx->external.direct_reference != NULL) ? true : false;
+
+#.FN_BODY MINType VAL_PTR = &parameter_tvb
+	tvbuff_t *parameter_tvb = NULL;
+%(DEFAULT_BODY)s
+	if (parameter_tvb){
+		dissect_ansi_map_min_type(parameter_tvb,actx->pinfo,tree, actx);
+	}
+
+#.FN_BODY ReturnResult/parameter
+  if(find_tcap_subdissector(tvb, actx, tree))
+    offset = tvb_reported_length(tvb);
+
+#.FN_BODY AttributeValueChangeDefinition/_item/newAttributeValue
+  offset=call_ber_oid_callback(object_identifier_id, tvb, offset, actx->pinfo, tree, actx->private_data);
+
+#.END
+# line above is just to fix the problem with syntax highlighting :<
+
+################################################################################
+# #.FN_PARS DIRECTIVE                                                          #
+################################################################################
+#.FN_PARS Code/global  FN_VARIANT = _str  VAL_PTR = &camel_obj_id
+#.FN_PARS ManagementExtension/identifier FN_VARIANT = _str  VAL_PTR = &object_identifier_id
+#.FN_PARS ProtocolExtensionField/extensionValue  FN_VARIANT=_pdu_new  TYPE_REF_FN=dissect_ProtocolExtensionFieldExtensionValue
+#.FN_PARS RequestSeqNum  VAL_PTR = &(h225_pi->requestSeqNum)
+
+#.FN_PARS  RedirectingPartyID
+  VAL_PTR = &parameter_tvb
+
+#.FN_PARS OtherRecipientInfo/oriType
+  FN_VARIANT = _str  VAL_PTR = &cms_data->object_identifier_id
+
+#.END
+# line above is just to fix the problem with syntax highlighting :<
+
+################################################################################
+# #.CLASS DIRECTIVE                                                            #
+################################################################################
+#.CLASS CONTEXT
+&Type
+&Assertion
+&id         ObjectIdentifierType
+#.END
+
+#.CLASS APPLICATION-CONTEXT
+&bind-operation		ClassReference OPERATION
+&Operations		ClassReference OPERATION
+&applicationContextName	ObjectIdentifierType
+#.END
+
+#.CLASS OBJECT-CLASS
+&Superclasses         ClassReference OBJECT-CLASS
+&kind                 TypeReference ObjectClassKind
+&MandatoryAttributes  ClassReference ATTRIBUTE
+&OptionalAttributes   ClassReference ATTRIBUTE
+&id                   ObjectIdentifierType
+#.END
+
+#.CLASS ATTRIBUTE
+&derivation            ClassReference ATTRIBUTE
+&Type
+&equality-match        ClassReference MATCHING-RULE
+&ordering-match        ClassReference MATCHING-RULE
+&substrings-match      ClassReference MATCHING-RULE
+&single-valued         BooleanType
+&collective            BooleanType
+&no-user-modification  BooleanType
+&usage                 TypeReference AttributeUsage
+&id                    ObjectIdentifierType
+#.END
+
+#.CLASS MATCHING-RULE
+&ParentMatchingRules   ClassReference MATCHING-RULE
+&AssertionType
+&uniqueMatchIndicator  ClassReference ATTRIBUTE
+&id                    ObjectIdentifierType
+#.END
+
+################################################################################
+# #.ASSIGNED_OBJECT_IDENTIFIER DIRECTIVE                                       #
+################################################################################
+#.ASSIGNED_OBJECT_IDENTIFIER classes
+#.ASSIGNED_OBJECT_IDENTIFIER ros-InformationObjects
+#.ASSIGNED_OBJECT_IDENTIFIER tc-Messages
+#.ASSIGNED_OBJECT_IDENTIFIER tc-NotationExtensions
+
+################################################################################
+# #.END_OF_CNF DIRECTIVE                                                       #
+################################################################################
+#.END_OF_CNF
+
+################################################################################
+# #.END DIRECTIVE                                                              #
+################################################################################
+#.END

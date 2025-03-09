@@ -1,294 +1,292 @@
 {
-    "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-    "name": "Wireshark Conformance File",
-    "scopeName": "source.cnf",
-    "fileTypes": [
-        "cnf"
-    ],
-    "patterns": [
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Wireshark Conformance File",
+  "scopeName": "source.cnf",
+  "fileTypes": ["cnf"],
+  "patterns": [
+    {
+      "include": "#comment"
+    },
+    {
+      "include": "#string"
+    },
+    {
+      "include": "#numeric"
+    },
+    {
+      "begin": "^#\\.END",
+      "end": "$",
+      "name": "keyword.control.cnf.end",
+      "patterns": [
         {
-            "include": "#comment"
-        },
-        {
-            "include": "#string"
-        },
-        {
-            "include": "#numeric"
-        },
-        {
-            "begin": "^#\\.END",
-            "end": "$",
-            "name": "keyword.control.cnf.end",
-            "patterns": [
-                {
-                    "include": "#comment"
-                }
-            ]
-        },
-        {
-            "begin": "^#\\.(IMPORT|INCLUDE)\\s+",
-            "end": "$",
-            "name": "keyword.control.cnf.import",
-            "patterns": [
-                {
-                    "begin": "(?<=#\\.(IMPORT|INCLUDE)\\s+)",
-                    "end": "(?=\\s|$|#)",
-                    "name": "string.unquoted.filepath.cnf",
-                    "patterns": [
-                        {
-                            "match": "^[^\\s#]+$",
-                            "name": "string.unquoted.filepath.cnf"
-                        }
-                    ]
-                },
-                {
-                    "begin": "\\s+",
-                    "end": "(?=#|$)",
-                    "name": "invalid.illegal.extra-arg.cnf",
-                    "patterns": [
-                        {
-                            "match": "\\S+",
-                            "name": "invalid.illegal.extra-arg.cnf"
-                        }
-                    ]
-                },
-                {
-                    "include": "#comment"
-                }
-            ]
-        },
-        {
-            "begin": "^#\\.(EXPORTS|NO_EMIT|OMIT_ASSIGNMENT|PDU)$",
-            "end": "^(?=#\\..*)",
-            "name": "keyword.control.cnf.single_value_list",
-            "patterns": [
-                {
-                    "include": "#comment"
-                },
-                {
-                    "captures": {
-                        "1": {
-                            "name": "variable.name"
-                        },
-                        "2": {
-                            "name": "comment.line"
-                        }
-                    },
-                    "match": "(\\S+)\\s+(#.*)"
-                },
-                {
-                    "captures": {
-                        "1": {
-                            "name": "variable.name"
-                        },
-                        "2": {
-                            "name": "invalid.illegal.extra-arg.cnf"
-                        }
-                    },
-                    "match": "(\\S+)\\s+(.*)"
-                }
-            ]
-        },
-        {
-            "begin": "^#\\.REGISTER$",
-            "end": "^(?=#\\..*)",
-            "name": "keyword.control.cnf.register",
-            "patterns": [
-                {
-                    "include": "#comment"
-                },
-                {
-                    "captures": {
-                        "1": {
-                            "name": "variable.name"
-                        },
-                        "2": {
-                            "name": "constant.character.assignment.cnf"
-                        },
-                        "3": {
-                            "name": "string.quoted.double.cnf"
-                        },
-                        "4": {
-                            "name": "string.quoted.double.cnf"
-                        },
-                        "5": {
-                            "name": "comment.line"
-                        }
-                    },
-                    "match": "(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(#.*)"
-                },
-                {
-                    "captures": {
-                        "1": {
-                            "name": "variable.name"
-                        },
-                        "2": {
-                            "name": "constant.character.assignment.cnf"
-                        },
-                        "3": {
-                            "name": "string.quoted.double.cnf"
-                        },
-                        "4": {
-                            "name": "string.quoted.double.cnf"
-                        },
-                        "5": {
-                            "name": "invalid.illegal.extra-arg.cnf"
-                        }
-                    },
-                    "match": "(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\S+)(.*)"
-                },
-                {
-                    "captures": {
-                        "1": {
-                            "name": "invalid.illegal.not-enough-args.cnf"
-                        }
-                    },
-                    "match": "(\\S+)"
-                }
-            ]
-        },
-        {
-            "begin": "^#\\.(FIELD|TYPE)_RENAME$",
-            "end": "^(?=#\\..*)",
-            "name": "keyword.control.cnf.field_type_rename",
-            "patterns": [
-                {
-                    "include": "#comment"
-                },
-                {
-                    "captures": {
-                        "1": {
-                            "name": "variable.name"
-                        },
-                        "2": {
-                            "name": "constant.character.assignment.cnf"
-                        },
-                        "3": {
-                            "name": "comment.line"
-                        }
-                    },
-                    "match": "(\\S+)\\s+(\\S+)\\s+(#.*)"
-                },
-                {
-                    "captures": {
-                        "1": {
-                            "name": "variable.name"
-                        },
-                        "2": {
-                            "name": "constant.character.assignment.cnf"
-                        },
-                        "3": {
-                            "name": "invalid.illegal.extra-arg.cnf"
-                        }
-                    },
-                    "match": "(\\S+)\\s+(\\S+)\\s+(.*)"
-                }
-            ]
-        },
-        {
-            "patterns": [
-                {
-                    "name": "meta.directive.fn_body",
-                    "match": "^(#\\.FN_BODY)\\s+([A-Za-z_/0-9]+)",
-                    "captures": {
-                        "1": {
-                            "name": "keyword.control.fn_body"
-                        },
-                        "2": {
-                            "name": "entity.name.tag.fn_body.value"
-                        }
-                    }
-                },
-                {
-                    "name": "meta.code.c",
-                    "begin": "^(?!#\\.)(?:\\s{2,}|\\t)",
-                    "end": "(?=^#\\.)",
-                    "patterns": [
-                        {
-                            "name": "meta.macro.default_body",
-                            "match": "%\\(DEFAULT_BODY\\)s",
-                            "captures": {
-                                "0": {
-                                    "name": "meta.preprocessor"
-                                }
-                            }
-                        },
-                        {
-                            "include": "source.c"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "patterns": [
-                {
-                    "name": "meta.directive.fn_pars",
-                    "match": "^(#\\.FN_PARS)\\s+([A-Za-z_/0-9]+)",
-                    "captures": {
-                        "1": {
-                            "name": "keyword.control.fn_pars"
-                        },
-                        "2": {
-                            "name": "entity.name.tag.fn_pars.value"
-                        }
-                    }
-                }
-            ]
+          "include": "#comment"
         }
-    ],
-    "repository": {
-        "comment": {
-            "patterns": [
-                {
-                    "match": "#(?!\\.).*$",
-                    "name": "comment.line.number-sign.cnf"
-                }
-            ]
+      ]
+    },
+    {
+      "begin": "^#\\.(IMPORT|INCLUDE)\\s+",
+      "end": "$",
+      "name": "keyword.control.cnf.import",
+      "patterns": [
+        {
+          "begin": "(?<=#\\.(IMPORT|INCLUDE)\\s+)",
+          "end": "(?=\\s|$|#)",
+          "name": "string.unquoted.filepath.cnf",
+          "patterns": [
+            {
+              "match": "^[^\\s#]+$",
+              "name": "string.unquoted.filepath.cnf"
+            }
+          ]
         },
-        "string": {
-            "patterns": [
-                {
-                    "begin": "\"",
-                    "end": "\"",
-                    "name": "string.quoted.double.cnf",
-                    "patterns": [
-                        {
-                            "include": "#escapes"
-                        }
-                    ]
-                },
-                {
-                    "begin": "'",
-                    "end": "'",
-                    "name": "string.quoted.single.cnf",
-                    "patterns": [
-                        {
-                            "include": "#escapes"
-                        }
-                    ]
-                }
-            ]
+        {
+          "begin": "\\s+",
+          "end": "(?=#|$)",
+          "name": "invalid.illegal.extra-arg.cnf",
+          "patterns": [
+            {
+              "match": "\\S+",
+              "name": "invalid.illegal.extra-arg.cnf"
+            }
+          ]
         },
-        "numeric": {
-            "patterns": [
-                {
-                    "match": "\\b(\\d+)\\b",
-                    "name": "constant.numeric.integer.cnf"
-                }
-            ]
-        },
-        "escapes": {
-            "patterns": [
-                {
-                    "name": "constant.character.escape.cnf",
-                    "match": "\\\\([\\\\bfnrtv'\"]|u\\h{4})"
-                },
-                {
-                    "name": "invalid.character.escape.cnf",
-                    "match": "\\\\."
-                }
-            ]
+        {
+          "include": "#comment"
         }
+      ]
+    },
+    {
+      "begin": "^#\\.(EXPORTS|NO_EMIT|OMIT_ASSIGNMENT|PDU)$",
+      "end": "^(?=#\\..*)",
+      "name": "keyword.control.cnf.single_value_list",
+      "patterns": [
+        {
+          "include": "#comment"
+        },
+        {
+          "captures": {
+            "1": {
+              "name": "variable.name"
+            },
+            "2": {
+              "name": "comment.line"
+            }
+          },
+          "match": "(\\S+)\\s+(#.*)"
+        },
+        {
+          "captures": {
+            "1": {
+              "name": "variable.name"
+            },
+            "2": {
+              "name": "invalid.illegal.extra-arg.cnf"
+            }
+          },
+          "match": "(\\S+)\\s+(.*)"
+        }
+      ]
+    },
+    {
+      "begin": "^#\\.REGISTER$",
+      "end": "^(?=#\\..*)",
+      "name": "keyword.control.cnf.register",
+      "patterns": [
+        {
+          "include": "#comment"
+        },
+        {
+          "captures": {
+            "1": {
+              "name": "variable.name"
+            },
+            "2": {
+              "name": "constant.character.assignment.cnf"
+            },
+            "3": {
+              "name": "string.quoted.double.cnf"
+            },
+            "4": {
+              "name": "string.quoted.double.cnf"
+            },
+            "5": {
+              "name": "comment.line"
+            }
+          },
+          "match": "(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(#.*)"
+        },
+        {
+          "captures": {
+            "1": {
+              "name": "variable.name"
+            },
+            "2": {
+              "name": "constant.character.assignment.cnf"
+            },
+            "3": {
+              "name": "string.quoted.double.cnf"
+            },
+            "4": {
+              "name": "string.quoted.double.cnf"
+            },
+            "5": {
+              "name": "invalid.illegal.extra-arg.cnf"
+            }
+          },
+          "match": "(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\S+)(.*)"
+        },
+        {
+          "captures": {
+            "1": {
+              "name": "invalid.illegal.not-enough-args.cnf"
+            }
+          },
+          "match": "(\\S+)"
+        }
+      ]
+    },
+    {
+      "begin": "^#\\.(FIELD|TYPE)_RENAME$",
+      "end": "^(?=#\\..*)",
+      "name": "keyword.control.cnf.field_type_rename",
+      "patterns": [
+        {
+          "include": "#comment"
+        },
+        {
+          "captures": {
+            "1": {
+              "name": "variable.name"
+            },
+            "2": {
+              "name": "constant.character.assignment.cnf"
+            },
+            "3": {
+              "name": "comment.line"
+            }
+          },
+          "match": "(\\S+)\\s+(\\S+)\\s+(#.*)"
+        },
+        {
+          "captures": {
+            "1": {
+              "name": "variable.name"
+            },
+            "2": {
+              "name": "constant.character.assignment.cnf"
+            },
+            "3": {
+              "name": "invalid.illegal.extra-arg.cnf"
+            }
+          },
+          "match": "(\\S+)\\s+(\\S+)\\s+(.*)"
+        }
+      ]
+    },
+    {
+      "patterns": [
+        {
+          "name": "meta.directive.fn_body",
+          "match": "^(#\\.FN_BODY)\\s+([A-Za-z_/0-9]+)",
+          "captures": {
+            "1": {
+              "name": "keyword.control.fn_body"
+            },
+            "2": {
+              "name": "entity.name.tag.fn_body.value"
+            }
+          }
+        },
+        {
+          "name": "meta.code.c",
+          "begin": "^(?!#\\.)(?:\\s{2,}|\\t)",
+          "end": "(?=^#\\.)",
+          "patterns": [
+            {
+              "name": "meta.macro.default_body",
+              "match": "%\\(DEFAULT_BODY\\)s",
+              "captures": {
+                "0": {
+                  "name": "meta.preprocessor"
+                }
+              }
+            },
+            {
+              "include": "source.c"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "patterns": [
+        {
+          "name": "meta.directive.fn_pars",
+          "match": "^(#\\.FN_PARS)\\s+([A-Za-z_/0-9]+)",
+          "captures": {
+            "1": {
+              "name": "keyword.control.fn_pars"
+            },
+            "2": {
+              "name": "entity.name.tag.fn_pars.value"
+            }
+          }
+        }
+      ]
     }
+  ],
+  "repository": {
+    "comment": {
+      "patterns": [
+        {
+          "match": "#(?!\\.).*$",
+          "name": "comment.line.number-sign.cnf"
+        }
+      ]
+    },
+    "string": {
+      "patterns": [
+        {
+          "begin": "\"",
+          "end": "\"",
+          "name": "string.quoted.double.cnf",
+          "patterns": [
+            {
+              "include": "#escapes"
+            }
+          ]
+        },
+        {
+          "begin": "'",
+          "end": "'",
+          "name": "string.quoted.single.cnf",
+          "patterns": [
+            {
+              "include": "#escapes"
+            }
+          ]
+        }
+      ]
+    },
+    "numeric": {
+      "patterns": [
+        {
+          "match": "\\b(\\d+)\\b",
+          "name": "constant.numeric.integer.cnf"
+        }
+      ]
+    },
+    "escapes": {
+      "patterns": [
+        {
+          "name": "constant.character.escape.cnf",
+          "match": "\\\\([\\\\bfnrtv'\"]|u\\h{4})"
+        },
+        {
+          "name": "invalid.character.escape.cnf",
+          "match": "\\\\."
+        }
+      ]
+    }
+  }
 }

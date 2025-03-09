@@ -12,9 +12,7 @@ let client: LanguageClient;
 
 export function activate(context: ExtensionContext) {
   // The server is implemented in node
-  const serverModule = context.asAbsolutePath(
-    path.join("server", "out", "server.js")
-  );
+  const serverModule = context.asAbsolutePath(path.join("server", "out", "server.js"));
 
   // If the extension is launched in debug mode then the debug server options are used
   // Otherwise the run options are used
@@ -23,7 +21,7 @@ export function activate(context: ExtensionContext) {
     debug: {
       module: serverModule,
       transport: TransportKind.ipc,
-      options: { execArgv: ["--nolazy", "--inspect=6009"] }
+      options: { execArgv: ["--nolazy", "--inspect=6009"] },
     },
   };
 
@@ -42,7 +40,7 @@ export function activate(context: ExtensionContext) {
     "cnf-lsp",
     "Wireshark Conformance Language Server",
     serverOptions,
-    clientOptions
+    clientOptions,
   );
 
   // Start the client. This will also launch the server

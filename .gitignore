@@ -1,5 +1,6 @@
 out
 node_modules
-client/server
+client/out
+server/out
 .vscode-test
 tsconfig.tsbuildinfo

@@ -7,6 +7,7 @@ import {
   Position,
   InsertTextFormat,
   TextDocumentPositionParams,
+  MarkupKind,
 } from "vscode-languageserver/node";
 
 import { TextDocument } from "vscode-languageserver-textdocument";
@@ -37,7 +38,7 @@ function createRenameCompletion(label: string, typename: string): CompletionItem
   };
 }
 
-function createTodoCompletionItem(label: string): CompletionItem {
+function createTodoMethodItem(label: string): CompletionItem {
   return {
     label: label,
     kind: CompletionItemKind.Method,
@@ -46,50 +47,101 @@ function createTodoCompletionItem(label: string): CompletionItem {
   };
 }
 
+function createTodoConstantItem(label: string): CompletionItem {
+  return {
+    label: label,
+    kind: CompletionItemKind.Constant,
+    detail: `Detail for ${label} is still TODO :(`,
+    documentation: `Documentation for ${label} is still TODO :(`,
+  };
+}
+
+function createRegistrationTypeItem(label: string, encodingType: string): CompletionItem {
+  return {
+    label: label,
+    kind: CompletionItemKind.Constant,
+    detail: `Register an item using ${encodingType} encoding.`,
+    documentation: {
+      kind: MarkupKind.Markdown,
+      value:
+        "This value should be used as the first argument in the `#.REGISTER` directive, " +
+        "just after specifying the field name. An example, assuming you're inside the " +
+        "`#.REGISTER` block:\n" +
+        `\`SomeName ${encodingType} "oid" "readable-text"\``,
+    },
+  };
+}
+
 /// List of completions that can be inserted in the document.
 const completions: CompletionItem[] = [
-  createImportCompletion("#.IMPORT"),
-  createImportCompletion("#.INCLUDE"),
-  createRenameCompletion("#.TYPE_RENAME", "types"),
-  createRenameCompletion("#.FIELD_RENAME", "fields"),
-  createRenameCompletion("#.TF_RENAME", "types and fields"),
-  createTodoCompletionItem("#.END_OF_CNF"),
-  createTodoCompletionItem("#.OPT"),
-  createTodoCompletionItem("#.PDU"),
-  createTodoCompletionItem("#.REGISTER"),
-  createTodoCompletionItem("#.MODULE"),
-  createTodoCompletionItem("#.MODULE_IMPORT"),
-  createTodoCompletionItem("#.OMIT_ASSIGNMENT"),
-  createTodoCompletionItem("#.NO_OMIT_ASSGN"), // can't find anything about it
-  createTodoCompletionItem("#.VIRTUAL_ASSGN"),
-  createTodoCompletionItem("#.SET_TYPE"),
-  createTodoCompletionItem("#.ASSIGN_VALUE_TO_TYPE"),
-  createTodoCompletionItem("#.IMPORT_TAG"),
-  createTodoCompletionItem("#.TYPE_ATTR"),
-  createTodoCompletionItem("#.ETYPE_ATTR"), // can't find anything about it
-  createTodoCompletionItem("#.FIELD_ATTR"),
-  createTodoCompletionItem("#.EFIELD_ATTR"), // can't find anything about it
-  createTodoCompletionItem("#.SYNTAX"),
-  createTodoCompletionItem("#.OMIT_ALL_ASSIGNMENTS"), // can't find anything about it
-  createTodoCompletionItem("#.OMIT_ASSIGNMENTS_EXCEPT"), // check how it works
-  createTodoCompletionItem("#.OMIT_ALL_TYPE_ASSIGNMENTS"), // can't find anything about it
-  createTodoCompletionItem("#.OMIT_TYPE_ASSIGNMENTS_EXCEPT"), // can't find anything about it
-  createTodoCompletionItem("#.OMIT_ALL_VALUE_ASSIGNMENTS"), // can't find anything about it
-  createTodoCompletionItem("#.OMIT_VALUE_ASSIGNMENTS_EXCEPT"), // can't find anything about it
-  createTodoCompletionItem("#.EXPORTS"),
-  createTodoCompletionItem("#.MODULE_EXPORTS"),
-  createTodoCompletionItem("#.USER_DEFINED"), // can't find anything about it
-  createTodoCompletionItem("#.NO_EMIT"),
-  createTodoCompletionItem("#.MAKE_ENUM"),
-  createTodoCompletionItem("#.MAKE_DEFINES"),
-  createTodoCompletionItem("#.USE_VALS_EXT"),
-  createTodoCompletionItem("#.FN_HDR"),
-  createTodoCompletionItem("#.FN_FTR"),
-  createTodoCompletionItem("#.FN_BODY"),
-  createTodoCompletionItem("#.FN_PARS"),
-  createTodoCompletionItem("#.CLASS"),
-  createTodoCompletionItem("#.ASSIGNED_OBJECT_IDENTIFIER"),
-  createTodoCompletionItem("#.END"),
+  ...["#.IMPORT", "#.INCLUDE"].map(createImportCompletion),
+  ...[
+    { label: "#.TYPE_RENAME", typename: "types" },
+    { label: "#.FIELD_RENAME", typename: "fields" },
+    { label: "#.TF_RENAME", typename: "types and fields" },
+  ].map(({ label, typename }) => createRenameCompletion(label, typename)),
+  ...[
+    "#.END_OF_CNF",
+    "#.OPT",
+    "#.PDU",
+    "#.REGISTER",
+    "#.MODULE",
+    "#.MODULE_IMPORT",
+    "#.OMIT_ASSIGNMENT",
+    "#.NO_OMIT_ASSGN",
+    "#.VIRTUAL_ASSGN",
+    "#.SET_TYPE",
+    "#.ASSIGN_VALUE_TO_TYPE",
+    "#.IMPORT_TAG",
+    "#.TYPE_ATTR",
+    "#.ETYPE_ATTR",
+    "#.FIELD_ATTR",
+    "#.EFIELD_ATTR",
+    "#.SYNTAX",
+    "#.OMIT_ALL_ASSIGNMENTS",
+    "#.OMIT_ASSIGNMENTS_EXCEPT",
+    "#.OMIT_ALL_TYPE_ASSIGNMENTS",
+    "#.OMIT_TYPE_ASSIGNMENTS_EXCEPT",
+    "#.OMIT_ALL_VALUE_ASSIGNMENTS",
+    "#.OMIT_VALUE_ASSIGNMENTS_EXCEPT",
+    "#.EXPORTS",
+    "#.MODULE_EXPORTS",
+    "#.USER_DEFINED",
+    "#.NO_EMIT",
+    "#.MAKE_ENUM",
+    "#.MAKE_DEFINES",
+    "#.USE_VALS_EXT",
+    "#.FN_HDR",
+    "#.FN_FTR",
+    "#.FN_BODY",
+    "#.FN_PARS",
+    "#.CLASS",
+    "#.ASSIGNED_OBJECT_IDENTIFIER",
+    "#.END",
+  ].map(createTodoMethodItem),
+  ...[
+    "WITH_VALS",
+    "WITHOUT_VALS",
+    "ONLY_VALS",
+    "ONLY_ENUM",
+    "WITH_ENUM",
+    "VALS_WITH_TABLE",
+    "WS_DLL",
+    "EXTERN",
+    "NO_PROT_PREFIX",
+  ].map(createTodoConstantItem),
+  ...[
+    { label: "N", encodingType: "NUM" },
+    { label: "NUM", encodingType: "NUM" },
+    { label: "S", encodingType: "STR" },
+    { label: "STR", encodingType: "STR" },
+    { label: "B", encodingType: "BER" },
+    { label: "BER", encodingType: "BER" },
+    { label: "P", encodingType: "PER" },
+    { label: "PER", encodingType: "PER" },
+    { label: "O", encodingType: "OER" },
+    { label: "OER", encodingType: "OER" },
+  ].map(({ label, encodingType }) => createRegistrationTypeItem(label, encodingType)),
 ];
 
 /// Returns a list of completion items for the given document and position. The list is based on the

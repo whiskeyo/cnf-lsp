@@ -1,292 +1,163 @@
 {
-  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-  "name": "Wireshark Conformance File",
-  "scopeName": "source.cnf",
-  "fileTypes": ["cnf"],
-  "patterns": [
-    {
-      "include": "#comment"
-    },
-    {
-      "include": "#string"
-    },
-    {
-      "include": "#numeric"
-    },
-    {
-      "begin": "^#\\.(END|END_OF_CNF)$",
-      "end": "$",
-      "name": "keyword.control.cnf.end",
-      "patterns": [
-        {
-          "include": "#comment"
-        }
-      ]
-    },
-    {
-      "begin": "^#\\.(IMPORT|INCLUDE)\\s+",
-      "end": "$",
-      "name": "keyword.control.cnf.import",
-      "patterns": [
-        {
-          "begin": "(?<=#\\.(IMPORT|INCLUDE)\\s+)",
-          "end": "(?=\\s|$|#)",
-          "name": "string.unquoted.filepath.cnf",
-          "patterns": [
-            {
-              "match": "^[^\\s#]+$",
-              "name": "string.unquoted.filepath.cnf"
-            }
-          ]
+    "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+    "name": "Wireshark Conformance File",
+    "scopeName": "source.cnf",
+    "fileTypes": ["cnf"],
+    "patterns": [
+        { "include": "#comment" },
+        { "include": "#string" },
+        { "include": "#include-import" },
+        { "include": "#type-rename" },
+        { "include": "#field-rename" },
+        { "include": "#tf-rename" },
+        { "include": "#opt" },
+        { "include": "#pdu" },
+        { "include": "#register" },
+        { "include": "#end" },
+        { "include": "#end-of-cnf" }
+    ],
+    "repository": {
+        "comment": {
+            "match": "#(?!\\.).*",
+            "name": "comment.line.number-sign.cnf"
         },
-        {
-          "begin": "\\s+",
-          "end": "(?=#|$)",
-          "name": "invalid.illegal.extra-arg.cnf",
-          "patterns": [
-            {
-              "match": "\\S+",
-              "name": "invalid.illegal.extra-arg.cnf"
-            }
-          ]
+        "string": {
+            "match": "\".*\"",
+            "name": "string.quoted.double.cnf"
         },
-        {
-          "include": "#comment"
-        }
-      ]
-    },
-    {
-      "begin": "^#\\.(EXPORTS|NO_EMIT|OMIT_ASSIGNMENT|PDU)$",
-      "end": "^(?=#\\..*)",
-      "name": "keyword.control.cnf.single_value_list",
-      "patterns": [
-        {
-          "include": "#comment"
+        "include-import": {
+            "match": "^(#\\.INCLUDE|#\\.IMPORT)\\s+(\\S+)",
+            "captures": {
+                "1": { "name": "keyword.other.include-import.cnf" },
+                "2": { "name": "string.quoted.double.cnf" }
+            },
+            "name": "keyword.other.include-import.cnf"
         },
-        {
-          "captures": {
-            "1": {
-              "name": "variable.name"
-            },
-            "2": {
-              "name": "comment.line"
-            }
-          },
-          "match": "(\\S+)\\s+(#.*)"
-        },
-        {
-          "captures": {
-            "1": {
-              "name": "variable.name"
-            },
-            "2": {
-              "name": "invalid.illegal.extra-arg.cnf"
-            }
-          },
-          "match": "(\\S+)\\s+(.*)"
-        }
-      ]
-    },
-    {
-      "begin": "^#\\.REGISTER$",
-      "end": "^(?=#\\..*)",
-      "name": "keyword.control.cnf.register",
-      "patterns": [
-        {
-          "include": "#comment"
-        },
-        {
-          "captures": {
-            "1": {
-              "name": "variable.name"
-            },
-            "2": {
-              "name": "constant.character.assignment.cnf"
-            },
-            "3": {
-              "name": "string.quoted.double.cnf"
-            },
-            "4": {
-              "name": "string.quoted.double.cnf"
-            },
-            "5": {
-              "name": "comment.line"
-            }
-          },
-          "match": "(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(#.*)"
-        },
-        {
-          "captures": {
-            "1": {
-              "name": "variable.name"
-            },
-            "2": {
-              "name": "constant.character.assignment.cnf"
-            },
-            "3": {
-              "name": "string.quoted.double.cnf"
-            },
-            "4": {
-              "name": "string.quoted.double.cnf"
-            },
-            "5": {
-              "name": "invalid.illegal.extra-arg.cnf"
-            }
-          },
-          "match": "(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\S+)(.*)"
-        },
-        {
-          "captures": {
-            "1": {
-              "name": "invalid.illegal.not-enough-args.cnf"
-            }
-          },
-          "match": "(\\S+)"
-        }
-      ]
-    },
-    {
-      "begin": "^#\\.(FIELD|TYPE|TF)_RENAME$",
-      "end": "^(?=#\\..*)",
-      "name": "keyword.control.cnf.field_type_rename",
-      "patterns": [
-        {
-          "include": "#comment"
-        },
-        {
-          "captures": {
-            "1": {
-              "name": "variable.name"
-            },
-            "2": {
-              "name": "constant.character.assignment.cnf"
-            },
-            "3": {
-              "name": "comment.line"
-            }
-          },
-          "match": "(\\S+)\\s+(\\S+)\\s+(#.*)"
-        },
-        {
-          "captures": {
-            "1": {
-              "name": "variable.name"
-            },
-            "2": {
-              "name": "constant.character.assignment.cnf"
-            },
-            "3": {
-              "name": "invalid.illegal.extra-arg.cnf"
-            }
-          },
-          "match": "(\\S+)\\s+(\\S+)\\s+(.*)"
-        }
-      ]
-    },
-    {
-      "patterns": [
-        {
-          "name": "meta.directive.fn_body",
-          "match": "^(#\\.FN_BODY)\\s+([A-Za-z_/0-9]+)",
-          "captures": {
-            "1": {
-              "name": "keyword.control.fn_body"
-            },
-            "2": {
-              "name": "entity.name.tag.fn_body.value"
-            }
-          }
-        },
-        {
-          "name": "meta.code.c",
-          "begin": "^(?!#\\.)(?:\\s{2,}|\\t)",
-          "end": "(?=^#\\.)",
-          "patterns": [
-            {
-              "name": "meta.macro.default_body",
-              "match": "%\\(DEFAULT_BODY\\)s",
-              "captures": {
-                "0": {
-                  "name": "meta.preprocessor"
+        "type-rename": {
+            "begin": "^#\\.TYPE_RENAME$",
+            "end": "^(?=#\\..*)",
+            "name": "keyword.other.type-rename.cnf",
+            "patterns": [
+                { "include": "#comment" },
+                {
+                    "match": "^(\\S+)\\s+(\\S+)",
+                    "captures": {
+                        "1": { "name": "entity.name.type.cnf" },
+                        "2": { "name": "entity.name.type.cnf" }
+                    }
                 }
-              }
-            },
-            {
-              "include": "source.c"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "patterns": [
-        {
-          "name": "meta.directive.fn_pars",
-          "match": "^(#\\.FN_PARS)\\s+([A-Za-z_/0-9]+)",
-          "captures": {
-            "1": {
-              "name": "keyword.control.fn_pars"
-            },
-            "2": {
-              "name": "entity.name.tag.fn_pars.value"
-            }
-          }
-        }
-      ]
-    }
-  ],
-  "repository": {
-    "comment": {
-      "patterns": [
-        {
-          "match": "#(?!\\.).*$",
-          "name": "comment.line.number-sign.cnf"
-        }
-      ]
-    },
-    "string": {
-      "patterns": [
-        {
-          "begin": "\"",
-          "end": "\"",
-          "name": "string.quoted.double.cnf",
-          "patterns": [
-            {
-              "include": "#escapes"
-            }
-          ]
+            ]
         },
-        {
-          "begin": "'",
-          "end": "'",
-          "name": "string.quoted.single.cnf",
-          "patterns": [
-            {
-              "include": "#escapes"
-            }
-          ]
-        }
-      ]
-    },
-    "numeric": {
-      "patterns": [
-        {
-          "match": "\\b(\\d+)\\b",
-          "name": "constant.numeric.integer.cnf"
-        }
-      ]
-    },
-    "escapes": {
-      "patterns": [
-        {
-          "name": "constant.character.escape.cnf",
-          "match": "\\\\([\\\\bfnrtv'\"]|u\\h{4})"
+        "field-rename": {
+            "begin": "^#\\.FIELD_RENAME$",
+            "end": "^(?=#\\..*)",
+            "name": "keyword.other.field-rename.cnf",
+            "patterns": [
+                { "include": "#comment" },
+                {
+                    "match": "^(\\S+)\\s+(\\S+)",
+                    "captures": {
+                        "1": { "name": "variable.name.cnf" },
+                        "2": { "name": "variable.name.cnf" }
+                    }
+                }
+            ]
         },
-        {
-          "name": "invalid.character.escape.cnf",
-          "match": "\\\\."
+        "tf-rename": {
+            "begin": "^#\\.TF_RENAME$",
+            "end": "^(?=#\\..*)",
+            "name": "keyword.other.tf-rename.cnf",
+            "patterns": [
+                { "include": "#comment" },
+                {
+                    "match": "^(\\p{Lu}\\S*)\\s+(\\p{Lu}\\S*)",
+                    "captures": {
+                        "1": { "name": "entity.name.type.cnf" },
+                        "2": { "name": "entity.name.type.cnf" }
+                    }
+                },
+                {
+                    "match": "^(\\S+)\\s+(\\S+)",
+                    "captures": {
+                        "1": { "name": "variable.name.cnf" },
+                        "2": { "name": "variable.name.cnf" }
+                    }
+                }
+            ]
+        },
+        "opt": {
+            "begin": "^#\\.OPT$",
+            "end": "^(?=#\\..*)",
+            "name": "keyword.other.opt.cnf",
+            "patterns": [
+                { "include": "#comment" },
+                {
+                    "match": "^(-\\S+)",
+                    "captures": {
+                        "1": { "name": "variable.parameter.cnf" }
+                    }
+                },
+                {
+                    "match": "^(\\S+)",
+                    "captures": {
+                        "1": { "name": "variable.parameter.cnf" }
+                    }
+                },
+                {
+                    "match": "^(-\\S+)\\s+(\\S+)",
+                    "captures": {
+                        "1": { "name": "variable.parameter.cnf" },
+                        "2": { "name": "variable.name.cnf" }
+                    }
+                }
+            ]
+        },
+        "pdu": {
+            "begin": "^#\\.PDU$",
+            "end": "^(?=#\\..*)",
+            "name": "keyword.other.pdu.cnf",
+            "patterns": [
+                { "include": "#comment" },
+                {
+                    "match": "^(\\S+)",
+                    "captures": {
+                        "1": { "name": "entity.name.type.cnf" }
+                    }
+                }
+            ]
+        },
+        "register": {
+            "begin": "^#\\.REGISTER$",
+            "end": "^(?=#\\..*)",
+            "name": "keyword.other.register.cnf",
+            "patterns": [
+                { "include": "#comment" },
+                {
+                    "match": "^(\\S+)\\s+(N|S|B|P|O|NUM|STR|BER|PER|OER)\\s+(\\S+)\\s+(\\S+)",
+                    "captures": {
+                        "1": { "name": "entity.name.type.cnf" },
+                        "2": { "name": "storage.type.cnf" },
+                        "3": { "name": "variable.name.cnf" },
+                        "4": { "name": "variable.name.cnf" }
+                    }
+                },
+                {
+                    "match": "^(\\S+)\\s+(B|P|O|BER|PER|OER)\\s+(\\S+)",
+                    "captures": {
+                        "1": { "name": "entity.name.type.cnf" },
+                        "2": { "name": "storage.type.cnf" },
+                        "3": { "name": "variable.name.cnf" }
+                    }
+                }
+            ]
+        },
+        "end": {
+            "match": "^#\\.END$",
+            "name": "keyword.other.end.cnf"
+        },
+        "end-of-cnf": {
+            "match": "^#\\.END_OF_CNF$",
+            "name": "keyword.other.end-of-cnf.cnf"
         }
-      ]
     }
-  }
 }

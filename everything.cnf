@@ -2,6 +2,14 @@
 # And multiple *.cnf files from Wireshark sources
 
 ################################################################################
+# Support of comments in the code                                              #
+################################################################################
+
+# normal comment
+#normal comment without space after #
+#.INCLUDE ../something.cnf # comment after some directive
+
+################################################################################
 # #.INCLUDE and #.IMPORT DIRECTIVES                                            #
 ################################################################################
 #.INCLUDE ../some/path/to/another.cnf
@@ -12,6 +20,9 @@
 ################################################################################
 #.TYPE_RENAME
 AARQ-apdu/_untag/protocol-version	T_AARQ_protocol_version
+Something Else # comment
+#comment
+wrongly named type # this can be skipped, right? it's invalid in the language
 
 ################################################################################
 # #.FIELD_RENAME DIRECTIVE                                                     #
@@ -23,17 +34,25 @@ AARQ-apdu/_untag/user-information	aARQ_user_information
 # #.TF_RENAME DIRECTIVE                                                        #
 ################################################################################
 #.TF_RENAME
+ItWorks/also WithoutComments
+as_you_can/see in_this_place
 IdmBind/argument	bind_argument # field rename (starting with lowercase)
 InitiatingMessage/value    InitiatingMessage_value # type rename (starting with uppercase)
+FirstThingIsType anotherOneIsField # wrong stuff = wrong coloring
+firstThingIsField AnotherOneIsType # wrong stuff = wrong coloring
 
 ################################################################################
 # #.OPT DIRECTIVE                                                              #
 ################################################################################
-#.OPT # it has to end with #.END directive
+#.OPT
 PER
-ALIGNED
+ALIGNED # with comment
+-b
 -b # support also this kind of compiler arguments
 -o gsm_map
+-o gsm_map # with another comment
+PROTO_ROOT_NAME    proto_lte_rrc # comment
+how is such thing parsed lol # it does not have to work well though
 #.END
 
 ################################################################################
@@ -41,7 +60,7 @@ ALIGNED
 ################################################################################
 #.PDU
 AARE-apdu
-OPERATION.&ArgumentType
+OPERATION.&ArgumentType # COMMENTED!!!!
 AccessPoint
 
 ################################################################################
@@ -49,7 +68,16 @@ AccessPoint
 ################################################################################
 #.REGISTER
 AsymmetricKeyPackage B "2.16.840.1.101.2.1.2.78.5" "id-ct-KP-aKeyPackage"
-ModificationParameter	S dop.oid	"modify.roleb.2.5.19.1"
+AsymmetricKeyPackage P "2.16.840.1.101.2.1.2.78.5"
+AsymmetricKeyPackage OER "2.16.840.1.101.2.1.2.78.5" # comment
+AsymmetricKeyPackage B "2.16.840.1.101.2.1.2.78.5"
+someLowerCaseType B "123" "456"
+ModificationParameter	S dop.oid	"modify.roleb.2.5.19.1" # comment
+ModificationParameter	S dop.oid "???"
+ModificationParameter	S dop.oid # comment
+ModificationParameter	S dop.oid
+AsymmetricKeyPackage X "2.16.840.1.101.2.1.2.78.5" # unknown encoding
+# what about fully commented line?
 
 ################################################################################
 # #.MODULE DIRECTIVE                                                           #
@@ -353,11 +381,11 @@ ProtocolIE-ID
 #.ASSIGNED_OBJECT_IDENTIFIER tc-NotationExtensions
 
 ################################################################################
-# #.END_OF_CNF DIRECTIVE                                                       #
-################################################################################
-#.END_OF_CNF
-
-################################################################################
 # #.END DIRECTIVE                                                              #
 ################################################################################
 #.END
+
+################################################################################
+# #.END_OF_CNF DIRECTIVE                                                       #
+################################################################################
+#.END_OF_CNF

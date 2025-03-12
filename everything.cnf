@@ -76,9 +76,12 @@ ModificationParameter	S dop.oid	"modify.roleb.2.5.19.1" # comment
 ModificationParameter	S dop.oid "???"
 ModificationParameter	S dop.oid # comment
 ModificationParameter	S dop.oid
-SomeType P "555" "asdasdas"
+SomeType PER "555" "asdasdas"
 AsymmetricKeyPackage X "2.16.840.1.101.2.1.2.78.5" # unknown encoding
 # what about fully commented line?
+
+#.REGISTER
+Dsa dsadas dsadas dsadsa
 
 ################################################################################
 # #.MODULE DIRECTIVE                                                           #

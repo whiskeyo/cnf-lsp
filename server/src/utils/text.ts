@@ -1,33 +1,31 @@
-interface BlockOfTextRange {
+export interface BlockOfTextRange {
   start: number;
   end: number;
 }
 
-export function findBlockOfText(
+export function findBlocksOfText(
   startText: string,
   endText: string,
   lines: string[],
-): BlockOfTextRange {
+): BlockOfTextRange[] {
+  const blocks: BlockOfTextRange[] = [];
   let start = -1;
-  let end = -1;
 
   for (let i = 0; i < lines.length; i++) {
-    if (lines[i].startsWith(startText)) {
+    if (start === -1 && lines[i].startsWith(startText)) {
       start = i;
-      i++;
-    }
-    if (start !== -1 && lines[i].startsWith(endText)) {
-      end = i;
-      break;
+    } else if (start !== -1 && lines[i].startsWith(endText)) {
+      blocks.push({ start, end: i - 1 }); // block ends just the line before
+      i = i - 1;
+      start = -1;
     }
   }
 
-  if (start !== -1 && end === -1) {
-    // EOF case
-    end = lines.length;
+  if (start !== -1) {
+    blocks.push({ start, end: lines.length }); // EOF case
   }
 
-  return { start, end };
+  return blocks;
 }
 
 export function isBlockOfTextRangeValid(blockOfTextRange: BlockOfTextRange): boolean {

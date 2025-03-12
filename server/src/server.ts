@@ -19,7 +19,7 @@ connection.onInitialize((params: InitializeParams) => onInitialize(params));
 connection.onCompletion((params: TextDocumentPositionParams) => onCompletion(documents, params));
 connection.onCompletionResolve((item: CompletionItem) => onCompletionResolve(item));
 
-documents.onDidChangeContent((change) => onDocumentChange(documents, connection, change));
+documents.onDidChangeContent((change) => onDocumentChange(connection, change));
 
 documents.listen(connection);
 connection.listen();

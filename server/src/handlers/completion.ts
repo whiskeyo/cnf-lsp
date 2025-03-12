@@ -11,7 +11,7 @@ import {
 } from "vscode-languageserver/node";
 
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { CnfDirectives } from "../utils/directives";
+import { CnfDirectives } from "../utils/constants";
 import log from "../utils/log";
 
 function createImportCompletion(label: string): CompletionItem {

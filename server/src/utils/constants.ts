@@ -1,3 +1,4 @@
+/// Directives used in the Asn2wrs conformation file.
 export enum CnfDirectives {
   IMPORT = "#.IMPORT",
   INCLUDE = "#.INCLUDE",
@@ -42,3 +43,50 @@ export enum CnfDirectives {
   ASSIGNED_OBJECT_IDENTIFIER = "#.ASSIGNED_OBJECT_IDENTIFIER",
   END = "#.END",
 }
+
+// Encoding types that can be used inside the #.REGISTER block for entries.
+export enum EncodingTypes {
+  N = "N",
+  NUM = "NUM",
+  S = "S",
+  STR = "STR",
+  B = "B",
+  BER = "BER",
+  P = "P",
+  PER = "PER",
+  O = "O",
+  OER = "OER",
+}
+
+export const allEncodingTypes = [
+  EncodingTypes.N,
+  EncodingTypes.NUM,
+  EncodingTypes.S,
+  EncodingTypes.STR,
+  EncodingTypes.B,
+  EncodingTypes.BER,
+  EncodingTypes.P,
+  EncodingTypes.PER,
+  EncodingTypes.O,
+  EncodingTypes.OER,
+];
+
+export const asn1EncodingTypes = [
+  EncodingTypes.B,
+  EncodingTypes.BER,
+  EncodingTypes.P,
+  EncodingTypes.PER,
+  EncodingTypes.O,
+  EncodingTypes.OER,
+];
+
+export const textEncodingTypes = [
+  EncodingTypes.N,
+  EncodingTypes.NUM,
+  EncodingTypes.S,
+  EncodingTypes.STR,
+];
+
+export const allEncodingTypeStrings = allEncodingTypes.map((type) => type.toString());
+export const asn1EncodingTypeStrings = asn1EncodingTypes.map((type) => type.toString());
+export const textEncodingTypeStrings = textEncodingTypes.map((type) => type.toString());

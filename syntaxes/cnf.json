@@ -1,165 +1,165 @@
 {
-    "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-    "name": "Wireshark Conformance File",
-    "scopeName": "source.cnf",
-    "fileTypes": ["cnf"],
-    "patterns": [
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Wireshark Conformance File",
+  "scopeName": "source.cnf",
+  "fileTypes": ["cnf"],
+  "patterns": [
+    { "include": "#comment" },
+    { "include": "#string" },
+    { "include": "#include-import" },
+    { "include": "#type-rename" },
+    { "include": "#field-rename" },
+    { "include": "#tf-rename" },
+    { "include": "#opt" },
+    { "include": "#pdu" },
+    { "include": "#register" },
+    { "include": "#end" },
+    { "include": "#end-of-cnf" }
+  ],
+  "repository": {
+    "comment": {
+      "match": "#(?!\\.).*",
+      "name": "comment.line.number-sign.cnf"
+    },
+    "string": {
+      "match": "\".*\"",
+      "name": "string.quoted.double.cnf"
+    },
+    "include-import": {
+      "match": "^(#\\.INCLUDE|#\\.IMPORT)\\s+(\\S+)",
+      "captures": {
+        "1": { "name": "keyword.other.include-import.cnf" },
+        "2": { "name": "string.quoted.double.cnf" }
+      },
+      "name": "keyword.other.include-import.cnf"
+    },
+    "type-rename": {
+      "begin": "^#\\.TYPE_RENAME$",
+      "end": "^(?=#\\..*)",
+      "name": "keyword.other.type-rename.cnf",
+      "patterns": [
         { "include": "#comment" },
-        { "include": "#string" },
-        { "include": "#include-import" },
-        { "include": "#type-rename" },
-        { "include": "#field-rename" },
-        { "include": "#tf-rename" },
-        { "include": "#opt" },
-        { "include": "#pdu" },
-        { "include": "#register" },
-        { "include": "#end" },
-        { "include": "#end-of-cnf" }
-    ],
-    "repository": {
-        "comment": {
-            "match": "#(?!\\.).*",
-            "name": "comment.line.number-sign.cnf"
-        },
-        "string": {
-            "match": "\".*\"",
-            "name": "string.quoted.double.cnf"
-        },
-        "include-import": {
-            "match": "^(#\\.INCLUDE|#\\.IMPORT)\\s+(\\S+)",
-            "captures": {
-                "1": { "name": "keyword.other.include-import.cnf" },
-                "2": { "name": "string.quoted.double.cnf" }
-            },
-            "name": "keyword.other.include-import.cnf"
-        },
-        "type-rename": {
-            "begin": "^#\\.TYPE_RENAME$",
-            "end": "^(?=#\\..*)",
-            "name": "keyword.other.type-rename.cnf",
-            "patterns": [
-                { "include": "#comment" },
-                {
-                    "match": "^(\\S+)\\s+(\\S+)",
-                    "captures": {
-                        "1": { "name": "entity.name.type.cnf" },
-                        "2": { "name": "entity.name.type.cnf" }
-                    }
-                }
-            ]
-        },
-        "field-rename": {
-            "begin": "^#\\.FIELD_RENAME$",
-            "end": "^(?=#\\..*)",
-            "name": "keyword.other.field-rename.cnf",
-            "patterns": [
-                { "include": "#comment" },
-                {
-                    "match": "^(\\S+)\\s+(\\S+)",
-                    "captures": {
-                        "1": { "name": "variable.name.cnf" },
-                        "2": { "name": "variable.name.cnf" }
-                    }
-                }
-            ]
-        },
-        "tf-rename": {
-            "begin": "^#\\.TF_RENAME$",
-            "end": "^(?=#\\..*)",
-            "name": "keyword.other.tf-rename.cnf",
-            "patterns": [
-                { "include": "#comment" },
-                {
-                    "match": "^(\\p{Lu}\\S*)\\s+(\\p{Lu}\\S*)",
-                    "captures": {
-                        "1": { "name": "entity.name.type.cnf" },
-                        "2": { "name": "entity.name.type.cnf" }
-                    }
-                },
-                {
-                    "match": "^(\\S+)\\s+(\\S+)",
-                    "captures": {
-                        "1": { "name": "variable.name.cnf" },
-                        "2": { "name": "variable.name.cnf" }
-                    }
-                }
-            ]
-        },
-        "opt": {
-            "begin": "^#\\.OPT$",
-            "end": "^(?=#\\..*)",
-            "name": "keyword.other.opt.cnf",
-            "patterns": [
-                { "include": "#comment" },
-                {
-                    "match": "^(-\\S+)",
-                    "captures": {
-                        "1": { "name": "variable.parameter.cnf" }
-                    }
-                },
-                {
-                    "match": "^(\\S+)",
-                    "captures": {
-                        "1": { "name": "variable.parameter.cnf" }
-                    }
-                },
-                {
-                    "match": "^(-\\S+)\\s+(\\S+)",
-                    "captures": {
-                        "1": { "name": "variable.parameter.cnf" },
-                        "2": { "name": "variable.name.cnf" }
-                    }
-                }
-            ]
-        },
-        "pdu": {
-            "begin": "^#\\.PDU$",
-            "end": "^(?=#\\..*)",
-            "name": "keyword.other.pdu.cnf",
-            "patterns": [
-                { "include": "#comment" },
-                {
-                    "match": "^(\\S+)",
-                    "captures": {
-                        "1": { "name": "entity.name.type.cnf" }
-                    }
-                }
-            ]
-        },
-        "register": {
-            "begin": "^#\\.REGISTER$",
-            "end": "^(?=#\\..*)",
-            "name": "keyword.other.register.cnf",
-            "patterns": [
-                { "include": "#comment" },
-                {
-                    "match": "^(\\S+)\\s+(\\S+)\\s+(\\S+)(\\s+#.*)?",
-                    "captures": {
-                        "1": { "name": "entity.name.type.cnf" },
-                        "2": { "name": "storage.type.cnf" },
-                        "3": { "name": "variable.name.cnf" },
-                        "4": { "name": "comment.line.number-sign.cnf" }
-                    }
-                },
-                {
-                    "match": "^(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\S+)(\\s+#.*)?",
-                    "captures": {
-                        "1": { "name": "entity.name.type.cnf" },
-                        "2": { "name": "storage.type.cnf" },
-                        "3": { "name": "variable.name.cnf" },
-                        "4": { "name": "variable.name.cnf" },
-                        "5": { "name": "comment.line.number-sign.cnf" }
-                    }
-                }
-            ]
-        },
-        "end": {
-            "match": "^#\\.END$",
-            "name": "keyword.other.end.cnf"
-        },
-        "end-of-cnf": {
-            "match": "^#\\.END_OF_CNF$",
-            "name": "keyword.other.end-of-cnf.cnf"
+        {
+          "match": "^(\\S+)\\s+(\\S+)",
+          "captures": {
+            "1": { "name": "entity.name.type.cnf" },
+            "2": { "name": "entity.name.type.cnf" }
+          }
         }
+      ]
+    },
+    "field-rename": {
+      "begin": "^#\\.FIELD_RENAME$",
+      "end": "^(?=#\\..*)",
+      "name": "keyword.other.field-rename.cnf",
+      "patterns": [
+        { "include": "#comment" },
+        {
+          "match": "^(\\S+)\\s+(\\S+)",
+          "captures": {
+            "1": { "name": "variable.name.cnf" },
+            "2": { "name": "variable.name.cnf" }
+          }
+        }
+      ]
+    },
+    "tf-rename": {
+      "begin": "^#\\.TF_RENAME$",
+      "end": "^(?=#\\..*)",
+      "name": "keyword.other.tf-rename.cnf",
+      "patterns": [
+        { "include": "#comment" },
+        {
+          "match": "^(\\p{Lu}\\S*)\\s+(\\p{Lu}\\S*)",
+          "captures": {
+            "1": { "name": "entity.name.type.cnf" },
+            "2": { "name": "entity.name.type.cnf" }
+          }
+        },
+        {
+          "match": "^(\\S+)\\s+(\\S+)",
+          "captures": {
+            "1": { "name": "variable.name.cnf" },
+            "2": { "name": "variable.name.cnf" }
+          }
+        }
+      ]
+    },
+    "opt": {
+      "begin": "^#\\.OPT$",
+      "end": "^(?=#\\..*)",
+      "name": "keyword.other.opt.cnf",
+      "patterns": [
+        { "include": "#comment" },
+        {
+          "match": "^(-\\S+)",
+          "captures": {
+            "1": { "name": "variable.parameter.cnf" }
+          }
+        },
+        {
+          "match": "^(\\S+)",
+          "captures": {
+            "1": { "name": "variable.parameter.cnf" }
+          }
+        },
+        {
+          "match": "^(-\\S+)\\s+(\\S+)",
+          "captures": {
+            "1": { "name": "variable.parameter.cnf" },
+            "2": { "name": "variable.name.cnf" }
+          }
+        }
+      ]
+    },
+    "pdu": {
+      "begin": "^#\\.PDU$",
+      "end": "^(?=#\\..*)",
+      "name": "keyword.other.pdu.cnf",
+      "patterns": [
+        { "include": "#comment" },
+        {
+          "match": "^(\\S+)",
+          "captures": {
+            "1": { "name": "entity.name.type.cnf" }
+          }
+        }
+      ]
+    },
+    "register": {
+      "begin": "^#\\.REGISTER$",
+      "end": "^(?=#\\..*)",
+      "name": "keyword.other.register.cnf",
+      "patterns": [
+        { "include": "#comment" },
+        {
+          "match": "^(\\S+)\\s+(\\S+)\\s+(\\S+)(\\s+#.*)?",
+          "captures": {
+            "1": { "name": "entity.name.type.cnf" },
+            "2": { "name": "storage.type.cnf" },
+            "3": { "name": "variable.name.cnf" },
+            "4": { "name": "comment.line.number-sign.cnf" }
+          }
+        },
+        {
+          "match": "^(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\S+)(\\s+#.*)?",
+          "captures": {
+            "1": { "name": "entity.name.type.cnf" },
+            "2": { "name": "storage.type.cnf" },
+            "3": { "name": "variable.name.cnf" },
+            "4": { "name": "variable.name.cnf" },
+            "5": { "name": "comment.line.number-sign.cnf" }
+          }
+        }
+      ]
+    },
+    "end": {
+      "match": "^#\\.END$",
+      "name": "keyword.other.end.cnf"
+    },
+    "end-of-cnf": {
+      "match": "^#\\.END_OF_CNF$",
+      "name": "keyword.other.end-of-cnf.cnf"
     }
+  }
 }

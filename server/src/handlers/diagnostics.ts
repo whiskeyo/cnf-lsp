@@ -1,7 +1,6 @@
 import {
   Diagnostic,
   DiagnosticSeverity,
-  TextDocuments,
   Range,
   Position,
   TextDocumentChangeEvent,
@@ -10,7 +9,6 @@ import {
 
 import { TextDocument } from "vscode-languageserver-textdocument";
 
-import log from "../utils/log";
 import {
   findBlocksOfText,
   isBlockOfTextRangeValid,
@@ -105,12 +103,19 @@ function validateRegisterEntries(
   return diagnostics;
 }
 
-function validateAllRegisterBlocks(lines: string[]): Diagnostic[] {
-  const diagnostics: Diagnostic[] = [];
-  const blocks = findBlocksOfText("#.REGISTER", "#.", lines);
+type BlockValidator = (lines: string[], blockOfTextRange: BlockOfTextRange) => Diagnostic[];
 
-  for (let block of blocks) {
-    diagnostics.push(...validateRegisterEntries(lines, block));
+function validateAllBlocks(
+  lines: string[],
+  validators: [BlockValidator, string, string][],
+): Diagnostic[] {
+  const diagnostics: Diagnostic[] = [];
+
+  for (const [validator, startMarker, endMarker] of validators) {
+    const blocks = findBlocksOfText(startMarker, endMarker, lines);
+    for (const block of blocks) {
+      diagnostics.push(...validator(lines, block));
+    }
   }
 
   return diagnostics;
@@ -124,9 +129,11 @@ export function onDocumentChange(
   change: TextDocumentChangeEvent<TextDocument>,
 ) {
   const lines = splitTextIntoLines(change.document.getText());
-  const diagnostics: Diagnostic[] = [];
+  const nextDirectiveStart = "#.";
 
-  diagnostics.push(...validateAllRegisterBlocks(lines));
+  const diagnostics: Diagnostic[] = validateAllBlocks(lines, [
+    [validateRegisterEntries, "#.REGISTER", nextDirectiveStart],
+  ]);
 
   connection.sendDiagnostics({ uri: change.document.uri, diagnostics });
 }

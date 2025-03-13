@@ -23,6 +23,31 @@ import {
 import { allEncodingTypeStrings, CnfDirectives, textEncodingTypeStrings } from "../utils/constants";
 import log from "../utils/log";
 
+function createRangeForToken(
+  lines: string[],
+  blockOfTextRange: BlockOfTextRange,
+  lineIdx: number,
+  token: string,
+): Range {
+  const startIdx = blockOfTextRange.start + lineIdx + 1;
+  const tokenStartIdx = lines[lineIdx].indexOf(token);
+  return Range.create(
+    Position.create(startIdx, tokenStartIdx),
+    Position.create(startIdx, tokenStartIdx + token.length),
+  );
+}
+
+function createRangeForLine(
+  lines: string[],
+  blockOfTextRange: BlockOfTextRange,
+  lineIdx: number,
+): Range {
+  return Range.create(
+    Position.create(blockOfTextRange.start + lineIdx, 0),
+    Position.create(blockOfTextRange.start + lineIdx, lines[lineIdx].length),
+  );
+}
+
 /// Validates entries inside the #.REGISTER block
 /// @param lines The lines of the document.
 /// @returns Diagnostics for the entries inside the #.REGISTER block.
@@ -57,10 +82,7 @@ function validateRegisterEntries(
     ) {
       diagnostics.push({
         severity: DiagnosticSeverity.Error,
-        range: Range.create(
-          Position.create(blockOfTextRange.start + i + 1, 0),
-          Position.create(blockOfTextRange.start + i + 1, registerEntries[i].length),
-        ),
+        range: createRangeForLine(registerEntries, blockOfTextRange, i),
         message: "Invalid register entry",
         source: "cnf-lsp",
       });
@@ -71,13 +93,7 @@ function validateRegisterEntries(
     if (!doesStartWithUppercase(tokens[0])) {
       diagnostics.push({
         severity: DiagnosticSeverity.Warning,
-        range: Range.create(
-          Position.create(blockOfTextRange.start + i + 1, registerEntries[i].indexOf(tokens[0])),
-          Position.create(
-            blockOfTextRange.start + i + 1,
-            registerEntries[i].indexOf(tokens[0]) + tokens[0].length,
-          ),
-        ),
+        range: createRangeForToken(registerEntries, blockOfTextRange, i, tokens[0]),
         message: "Type name should always start with an uppercase letter",
         source: "cnf-lsp",
       });
@@ -86,13 +102,7 @@ function validateRegisterEntries(
     if (!allEncodingTypeStrings.includes(tokens[1])) {
       diagnostics.push({
         severity: DiagnosticSeverity.Error,
-        range: Range.create(
-          Position.create(blockOfTextRange.start + i + 1, registerEntries[i].indexOf(tokens[1])),
-          Position.create(
-            blockOfTextRange.start + i + 1,
-            registerEntries[i].indexOf(tokens[1]) + tokens[1].length,
-          ),
-        ),
+        range: createRangeForToken(registerEntries, blockOfTextRange, i, tokens[1]),
         message: `Invalid encoding type! Please use one of ${allEncodingTypeStrings.join(", ")}.`,
         source: "cnf-lsp",
       });
@@ -101,10 +111,7 @@ function validateRegisterEntries(
     if (textEncodingTypeStrings.includes(tokens[1]) && tokens.length !== 4) {
       diagnostics.push({
         severity: DiagnosticSeverity.Error,
-        range: Range.create(
-          Position.create(blockOfTextRange.start + i + 1, 0),
-          Position.create(blockOfTextRange.start + i + 1, registerEntries[i].length),
-        ),
+        range: createRangeForLine(registerEntries, blockOfTextRange, i),
         message: `Invalid number of arguments for encoding type ${tokens[1]}.`,
         source: "cnf-lsp",
       });
@@ -136,10 +143,7 @@ function validateFieldRenames(lines: string[], blockOfTextRange: BlockOfTextRang
     if (tokens.length !== expectedTokensCount) {
       diagnostics.push({
         severity: DiagnosticSeverity.Error,
-        range: Range.create(
-          Position.create(blockOfTextRange.start + i + 1, 0),
-          Position.create(blockOfTextRange.start + i + 1, fieldRenameEntries[i].length),
-        ),
+        range: createRangeForLine(fieldRenameEntries, blockOfTextRange, i),
         message: "Invalid field rename entry. Expected 2 tokens.",
         source: "cnf-lsp",
       });
@@ -149,10 +153,7 @@ function validateFieldRenames(lines: string[], blockOfTextRange: BlockOfTextRang
     if (!doesStartWithLowercase(tokens[1])) {
       diagnostics.push({
         severity: DiagnosticSeverity.Warning,
-        range: Range.create(
-          Position.create(blockOfTextRange.start + i + 1, 0),
-          Position.create(blockOfTextRange.start + i + 1, fieldRenameEntries[i].length),
-        ),
+        range: createRangeForToken(fieldRenameEntries, blockOfTextRange, i, tokens[1]),
         message: "Field name should always start with a lowercase letter",
         source: "cnf-lsp",
       });
@@ -183,10 +184,7 @@ function validateTypeRenames(lines: string[], blockOfTextRange: BlockOfTextRange
     if (tokens.length !== expectedTokensCount) {
       diagnostics.push({
         severity: DiagnosticSeverity.Error,
-        range: Range.create(
-          Position.create(blockOfTextRange.start + i + 1, 0),
-          Position.create(blockOfTextRange.start + i + 1, typeRenameEntries[i].length),
-        ),
+        range: createRangeForLine(typeRenameEntries, blockOfTextRange, i),
         message: "Invalid type rename entry. Expected 2 tokens.",
         source: "cnf-lsp",
       });
@@ -196,10 +194,7 @@ function validateTypeRenames(lines: string[], blockOfTextRange: BlockOfTextRange
     if (!doesStartWithUppercase(tokens[1])) {
       diagnostics.push({
         severity: DiagnosticSeverity.Warning,
-        range: Range.create(
-          Position.create(blockOfTextRange.start + i + 1, 0),
-          Position.create(blockOfTextRange.start + i + 1, typeRenameEntries[i].length),
-        ),
+        range: createRangeForToken(typeRenameEntries, blockOfTextRange, i, tokens[1]),
         message: "Type name should always start with a uppercase letter",
         source: "cnf-lsp",
       });
@@ -208,6 +203,9 @@ function validateTypeRenames(lines: string[], blockOfTextRange: BlockOfTextRange
   return diagnostics;
 }
 
+/// A block validator function type. It takes a block of text and returns diagnostics,
+/// if any are found. Made specifically for the validateAllBlocks function to simplify
+/// calling multiple validators.
 type BlockValidator = (lines: string[], blockOfTextRange: BlockOfTextRange) => Diagnostic[];
 
 function validateAllBlocks(

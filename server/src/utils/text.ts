@@ -33,7 +33,11 @@ export function isBlockOfTextRangeValid(blockOfTextRange: BlockOfTextRange): boo
 }
 
 export function stripComment(line: string, startComment: string = "#"): string {
-  return line.split(startComment)[0].trim();
+  if (line.startsWith(startComment)) {
+    return "";
+  } else {
+    return line.split(startComment)[0].trim();
+  }
 }
 
 export function changeWhitespacesToSingleSpace(line: string): string {
@@ -42,6 +46,10 @@ export function changeWhitespacesToSingleSpace(line: string): string {
 
 export function splitTextIntoLines(text: string): string[] {
   return text.split(/\r?\n/g);
+}
+
+export function doesStartWithLowercase(text: string): boolean {
+  return text[0].toLowerCase() === text[0];
 }
 
 export function doesStartWithUppercase(text: string): boolean {

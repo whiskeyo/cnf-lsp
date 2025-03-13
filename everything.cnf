@@ -21,14 +21,19 @@
 #.TYPE_RENAME
 AARQ-apdu/_untag/protocol-version	T_AARQ_protocol_version
 Something Else # comment
-#comment
 wrongly named type # this can be skipped, right? it's invalid in the language
+#comment
+GoodRename GoodRename
+#comment
+GoodRename xdd
 
 ################################################################################
 # #.FIELD_RENAME DIRECTIVE                                                     #
 ################################################################################
 #.FIELD_RENAME
 AARQ-apdu/_untag/user-information	aARQ_user_information
+#comment
+dsadas UppercaseType andExtraArgument # this should cause 2 warnings
 
 ################################################################################
 # #.TF_RENAME DIRECTIVE                                                        #
@@ -73,6 +78,7 @@ AsymmetricKeyPackage OER "2.16.840.1.101.2.1.2.78.5" # comment
 AsymmetricKeyPackage B "2.16.840.1.101.2.1.2.78.5"
 someLowerCaseType B "123" "456"
 ModificationParameter	S dop.oid	"modify.roleb.2.5.19.1" # comment
+#comment
 ModificationParameter	S dop.oid "???"
 ModificationParameter	S dop.oid # comment
 ModificationParameter	S dop.oid

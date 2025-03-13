@@ -6,6 +6,8 @@
 - documented directives based on official [Wireshark Developer's Guide](https://www.wireshark.org/docs/wsdg_html_chunked/index.html),
 - snippets to speed up coding.
 
+![cnf-lsp on the screenshot, marking multiple errors in the *.cnf code](./assets/cnf-lsp-in-action.png)
+
 ## Development specific to VS Code
 
 Run this command from the root of the repository:

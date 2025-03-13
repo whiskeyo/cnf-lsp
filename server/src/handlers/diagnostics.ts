@@ -72,8 +72,11 @@ function validateRegisterEntries(
       diagnostics.push({
         severity: DiagnosticSeverity.Warning,
         range: Range.create(
-          Position.create(blockOfTextRange.start + i + 1, 0),
-          Position.create(blockOfTextRange.start + i + 1, registerEntries[i].length),
+          Position.create(blockOfTextRange.start + i + 1, registerEntries[i].indexOf(tokens[0])),
+          Position.create(
+            blockOfTextRange.start + i + 1,
+            registerEntries[i].indexOf(tokens[0]) + tokens[0].length,
+          ),
         ),
         message: "Type name should always start with an uppercase letter",
         source: "cnf-lsp",
@@ -84,8 +87,11 @@ function validateRegisterEntries(
       diagnostics.push({
         severity: DiagnosticSeverity.Error,
         range: Range.create(
-          Position.create(blockOfTextRange.start + i + 1, 0),
-          Position.create(blockOfTextRange.start + i + 1, registerEntries[i].length),
+          Position.create(blockOfTextRange.start + i + 1, registerEntries[i].indexOf(tokens[1])),
+          Position.create(
+            blockOfTextRange.start + i + 1,
+            registerEntries[i].indexOf(tokens[1]) + tokens[1].length,
+          ),
         ),
         message: `Invalid encoding type! Please use one of ${allEncodingTypeStrings.join(", ")}.`,
         source: "cnf-lsp",

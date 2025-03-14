@@ -43,8 +43,8 @@ function createRangeForLine(
   lineIdx: number,
 ): Range {
   return Range.create(
-    Position.create(blockOfTextRange.start + lineIdx, 0),
-    Position.create(blockOfTextRange.start + lineIdx, lines[lineIdx].length),
+    Position.create(blockOfTextRange.start + lineIdx + 1, 0),
+    Position.create(blockOfTextRange.start + lineIdx + 1, lines[lineIdx].length),
   );
 }
 
@@ -216,10 +216,13 @@ function validateAllBlocks(
 
   for (const [validator, startMarker, endMarker] of validators) {
     const blocks = findBlocksOfText(startMarker, endMarker, lines);
-    log.write("Blocks for " + startMarker + ": " + JSON.stringify(blocks));
     for (const block of blocks) {
       let newDiagnostics = validator(lines, block);
-      log.write("Diagnostics for " + startMarker + ": " + JSON.stringify(newDiagnostics));
+      log.write(`Diagnostics for ${startMarker} [lines ${block.start}-${block.end}]:`);
+      for (const diag of newDiagnostics) {
+        log.write(JSON.stringify(diag, null, 2));
+      }
+
       diagnostics.push(...newDiagnostics);
     }
   }

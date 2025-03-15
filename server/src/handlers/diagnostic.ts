@@ -1,8 +1,6 @@
 import {
   Diagnostic,
   DiagnosticSeverity,
-  Range,
-  Position,
   TextDocumentChangeEvent,
   Connection,
 } from "vscode-languageserver/node";
@@ -194,7 +192,7 @@ function validateAllBlocks(
   for (const [validator, startMarker, endMarker] of validators) {
     const blocks = findBlocksOfText(startMarker, endMarker, lines);
     for (const block of blocks) {
-      let newDiagnostics = validator(lines, block);
+      const newDiagnostics = validator(lines, block);
       log.write(`Diagnostics for ${startMarker} [lines ${block.start}-${block.end}]:`);
       for (const diag of newDiagnostics) {
         log.write(JSON.stringify(diag, null, 2));

@@ -1,3 +1,5 @@
+import { Range, Position } from "vscode-languageserver/node";
+
 export interface BlockOfTextRange {
   start: number;
   end: number;
@@ -49,9 +51,42 @@ export function splitTextIntoLines(text: string): string[] {
 }
 
 export function doesStartWithLowercase(text: string): boolean {
+  if (text === "") {
+    return false;
+  }
+
   return text[0].toLowerCase() === text[0];
 }
 
 export function doesStartWithUppercase(text: string): boolean {
+  if (text === "") {
+    return false;
+  }
+
   return text[0].toUpperCase() === text[0];
+}
+
+export function createRangeForToken(
+  lines: string[],
+  blockOfTextRange: BlockOfTextRange,
+  lineIdx: number,
+  token: string,
+): Range {
+  const startIdx = blockOfTextRange.start + lineIdx + 1;
+  const tokenStartIdx = lines[lineIdx].indexOf(token);
+  return Range.create(
+    Position.create(startIdx, tokenStartIdx),
+    Position.create(startIdx, tokenStartIdx + token.length),
+  );
+}
+
+export function createRangeForLine(
+  lines: string[],
+  blockOfTextRange: BlockOfTextRange,
+  lineIdx: number,
+): Range {
+  return Range.create(
+    Position.create(blockOfTextRange.start + lineIdx + 1, 0),
+    Position.create(blockOfTextRange.start + lineIdx + 1, lines[lineIdx].length),
+  );
 }

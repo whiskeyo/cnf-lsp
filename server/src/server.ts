@@ -8,7 +8,7 @@ import {
 } from "vscode-languageserver/node";
 
 import { onCompletion, onCompletionResolve } from "./handlers/completion";
-import { onDocumentChange } from "./handlers/diagnostics";
+import { onDocumentChange } from "./handlers/diagnostic";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { onInitialize } from "./handlers/initialize";
 

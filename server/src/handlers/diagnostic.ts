@@ -1,8 +1,6 @@
 import {
   Diagnostic,
   DiagnosticSeverity,
-  Range,
-  Position,
   TextDocumentChangeEvent,
   Connection,
 } from "vscode-languageserver/node";
@@ -18,35 +16,12 @@ import {
   doesStartWithUppercase,
   BlockOfTextRange,
   doesStartWithLowercase,
-} from "../utils/text";
+  createRangeForToken,
+  createRangeForLine,
+} from "../utils/textUtils";
 
 import { allEncodingTypeStrings, CnfDirectives, textEncodingTypeStrings } from "../utils/constants";
 import log from "../utils/log";
-
-function createRangeForToken(
-  lines: string[],
-  blockOfTextRange: BlockOfTextRange,
-  lineIdx: number,
-  token: string,
-): Range {
-  const startIdx = blockOfTextRange.start + lineIdx + 1;
-  const tokenStartIdx = lines[lineIdx].indexOf(token);
-  return Range.create(
-    Position.create(startIdx, tokenStartIdx),
-    Position.create(startIdx, tokenStartIdx + token.length),
-  );
-}
-
-function createRangeForLine(
-  lines: string[],
-  blockOfTextRange: BlockOfTextRange,
-  lineIdx: number,
-): Range {
-  return Range.create(
-    Position.create(blockOfTextRange.start + lineIdx + 1, 0),
-    Position.create(blockOfTextRange.start + lineIdx + 1, lines[lineIdx].length),
-  );
-}
 
 /// Validates entries inside the #.REGISTER block
 /// @param lines The lines of the document.
@@ -217,7 +192,7 @@ function validateAllBlocks(
   for (const [validator, startMarker, endMarker] of validators) {
     const blocks = findBlocksOfText(startMarker, endMarker, lines);
     for (const block of blocks) {
-      let newDiagnostics = validator(lines, block);
+      const newDiagnostics = validator(lines, block);
       log.write(`Diagnostics for ${startMarker} [lines ${block.start}-${block.end}]:`);
       for (const diag of newDiagnostics) {
         log.write(JSON.stringify(diag, null, 2));

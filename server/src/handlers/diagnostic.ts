@@ -18,35 +18,12 @@ import {
   doesStartWithUppercase,
   BlockOfTextRange,
   doesStartWithLowercase,
-} from "../utils/text";
+  createRangeForToken,
+  createRangeForLine,
+} from "../utils/textUtils";
 
 import { allEncodingTypeStrings, CnfDirectives, textEncodingTypeStrings } from "../utils/constants";
 import log from "../utils/log";
-
-function createRangeForToken(
-  lines: string[],
-  blockOfTextRange: BlockOfTextRange,
-  lineIdx: number,
-  token: string,
-): Range {
-  const startIdx = blockOfTextRange.start + lineIdx + 1;
-  const tokenStartIdx = lines[lineIdx].indexOf(token);
-  return Range.create(
-    Position.create(startIdx, tokenStartIdx),
-    Position.create(startIdx, tokenStartIdx + token.length),
-  );
-}
-
-function createRangeForLine(
-  lines: string[],
-  blockOfTextRange: BlockOfTextRange,
-  lineIdx: number,
-): Range {
-  return Range.create(
-    Position.create(blockOfTextRange.start + lineIdx + 1, 0),
-    Position.create(blockOfTextRange.start + lineIdx + 1, lines[lineIdx].length),
-  );
-}
 
 /// Validates entries inside the #.REGISTER block
 /// @param lines The lines of the document.

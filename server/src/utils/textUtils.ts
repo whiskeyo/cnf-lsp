@@ -72,11 +72,11 @@ export function createRangeForToken(
   lineIdx: number,
   token: string,
 ): Range {
-  const startIdx = blockOfTextRange.start + lineIdx + 1;
-  const tokenStartIdx = lines[lineIdx].indexOf(token);
+  const line = blockOfTextRange.start + lineIdx + 1;
+  const character = lines[lineIdx].indexOf(token);
   return Range.create(
-    Position.create(startIdx, tokenStartIdx),
-    Position.create(startIdx, tokenStartIdx + token.length),
+    Position.create(line, character),
+    Position.create(line, character + token.length),
   );
 }
 

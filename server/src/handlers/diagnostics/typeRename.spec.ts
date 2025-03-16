@@ -32,8 +32,8 @@ describe("validateTypeRenames", () => {
   });
 
   test("should return empty array if type rename entries are empty", () => {
-    const lines = ["#.TYPE_RENAME", ""];
-    const blockOfTextRange: BlockOfTextRange = { start: 0, end: 1 };
+    const lines = ["#.TYPE_RENAME", "", "", ""];
+    const blockOfTextRange: BlockOfTextRange = { start: 0, end: 3 };
 
     const result = validateTypeRenames(lines, blockOfTextRange);
 

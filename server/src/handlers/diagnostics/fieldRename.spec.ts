@@ -32,8 +32,8 @@ describe("validateFieldRenames", () => {
   });
 
   test("should return empty array if field rename entries are empty", () => {
-    const lines = ["#.FIELD_RENAME", ""];
-    const blockOfTextRange: BlockOfTextRange = { start: 0, end: 1 };
+    const lines = ["#.FIELD_RENAME", "", "", ""];
+    const blockOfTextRange: BlockOfTextRange = { start: 0, end: 3 };
 
     const result = validateFieldRenames(lines, blockOfTextRange);
 

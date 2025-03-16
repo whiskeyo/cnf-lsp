@@ -13,6 +13,15 @@ describe("validateFieldRenames", () => {
     expect(result).toEqual([]);
   });
 
+  test("should return empty array if block of range is invalid", () => {
+    const lines = ["#.FIELD_RENAME"];
+    const blockOfTextRange: BlockOfTextRange = { start: -1, end: -1 };
+
+    const result = validateFieldRenames(lines, blockOfTextRange);
+
+    expect(result).toEqual([]);
+  });
+
   test("should return empty array if no field rename entries are provided", () => {
     const lines = ["#.FIELD_RENAME"];
     const blockOfTextRange: BlockOfTextRange = { start: 0, end: 0 };

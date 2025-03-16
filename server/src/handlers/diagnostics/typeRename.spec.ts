@@ -75,7 +75,7 @@ describe("validateTypeRenames", () => {
       {
         severity: DiagnosticSeverity.Warning,
         range: { start: { line: 1, character: 8 }, end: { line: 1, character: 15 } },
-        message: "Type name should always start with a uppercase letter",
+        message: "Type name should always start with an uppercase letter",
         source: "cnf-lsp",
       },
     ]);
@@ -96,7 +96,7 @@ describe("validateTypeRenames", () => {
       {
         severity: DiagnosticSeverity.Warning,
         range: { start: { line: 3, character: 8 }, end: { line: 3, character: 15 } },
-        message: "Type name should always start with a uppercase letter",
+        message: "Type name should always start with an uppercase letter",
         source: "cnf-lsp",
       },
     ]);

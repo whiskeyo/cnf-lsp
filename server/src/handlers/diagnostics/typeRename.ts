@@ -50,7 +50,7 @@ export function validateTypeRenames(
       diagnostics.push({
         severity: DiagnosticSeverity.Warning,
         range: createRangeForToken(typeRenameEntries, blockOfTextRange, i, tokens[1]),
-        message: "Type name should always start with a uppercase letter",
+        message: "Type name should always start with an uppercase letter",
         source: "cnf-lsp",
       });
     }

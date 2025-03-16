@@ -1,11 +1,8 @@
 import { Diagnostic, TextDocumentChangeEvent, Connection } from "vscode-languageserver/node";
-
 import { TextDocument } from "vscode-languageserver-textdocument";
 
 import { findBlocksOfText, splitTextIntoLines, BlockOfTextRange } from "../utils/textUtils";
-
 import { CnfDirectives } from "../utils/constants";
-import log from "../utils/log";
 import { validateRegisterEntries } from "./diagnostics/register";
 import { validateFieldRenames } from "./diagnostics/fieldRename";
 import { validateTypeRenames } from "./diagnostics/typeRename";
@@ -24,13 +21,7 @@ function validateAllBlocks(
   for (const [validator, startMarker, endMarker] of validators) {
     const blocks = findBlocksOfText(startMarker, endMarker, lines);
     for (const block of blocks) {
-      const newDiagnostics = validator(lines, block);
-      log.write(`Diagnostics for ${startMarker} [lines ${block.start}-${block.end}]:`);
-      for (const diag of newDiagnostics) {
-        log.write(JSON.stringify(diag, null, 2));
-      }
-
-      diagnostics.push(...newDiagnostics);
+      diagnostics.push(...validator(lines, block));
     }
   }
 

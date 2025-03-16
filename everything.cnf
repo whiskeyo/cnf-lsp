@@ -27,6 +27,11 @@ GoodRename GoodRename
 #comment
 GoodRename xdd
 
+#.TYPE_RENAME
+OldName NewName
+oldName
+OldName newName
+
 ################################################################################
 # #.FIELD_RENAME DIRECTIVE                                                     #
 ################################################################################

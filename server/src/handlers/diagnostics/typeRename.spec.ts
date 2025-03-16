@@ -1,5 +1,5 @@
 import { validateTypeRenames } from "./typeRename";
-import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver/node";
+import { DiagnosticSeverity } from "vscode-languageserver/node";
 
 import { BlockOfTextRange } from "../../utils/textUtils";
 

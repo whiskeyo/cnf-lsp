@@ -23,10 +23,10 @@ connection.onCompletion((params: TextDocumentPositionParams) => onCompletion(doc
 connection.onCompletionResolve((item: CompletionItem) => onCompletionResolve(item));
 
 const onDidChangeContentDebounced = debounce(
-  (connection, change) => onDocumentChange(connection, change),
+  (change) => onDocumentChange(connection, change),
   debounceTimeout,
 );
-documents.onDidChangeContent((change) => onDidChangeContentDebounced(connection, change));
+documents.onDidChangeContent((change) => onDidChangeContentDebounced(change));
 
 documents.listen(connection);
 connection.listen();

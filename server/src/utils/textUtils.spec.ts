@@ -6,6 +6,7 @@ import {
   splitTextIntoLines,
   findBlocksOfText,
   isBlockOfTextRangeValid,
+  extractWordFromLine,
 } from "./textUtils";
 
 describe("findBlocksOfText and isBlockOfTextRangeValid", () => {
@@ -191,5 +192,49 @@ describe("doesStartWithUppercase", () => {
     const string = "Test";
     const result = doesStartWithUppercase(string);
     expect(result).toBe(true);
+  });
+});
+
+describe("extractWordFromLine", () => {
+  test("returns empty string for empty line", () => {
+    const line = "";
+    const characterIndex = 0;
+    const result = extractWordFromLine(line, characterIndex);
+    expect(result).toBe("");
+  });
+
+  test("returns empty string for character index out of bounds", () => {
+    const line = "this is a test";
+    const characterIndex = 100;
+    const result = extractWordFromLine(line, characterIndex);
+    expect(result).toBe("");
+  });
+
+  test("returns empty string for negative character index", () => {
+    const line = "this is a test";
+    const characterIndex = -1;
+    const result = extractWordFromLine(line, characterIndex);
+    expect(result).toBe("");
+  });
+
+  test("extracts word from the line", () => {
+    const line = "this is a test";
+    const characterIndex = 5;
+    const result = extractWordFromLine(line, characterIndex);
+    expect(result).toBe("is");
+  });
+
+  test("extracts word from the line with special characters", () => {
+    const line = "this.is.a.test";
+    const characterIndex = 5;
+    const result = extractWordFromLine(line, characterIndex);
+    expect(result).toBe("this.is.a.test");
+  });
+
+  test("extracts directives with #. in the name", () => {
+    const line = "imagine that #.REGISTER is being caught";
+    const characterIndex = 18;
+    const result = extractWordFromLine(line, characterIndex);
+    expect(result).toBe("#.REGISTER");
   });
 });

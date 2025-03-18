@@ -5,38 +5,13 @@ import {
   TextEdit,
   Range,
   Position,
-  InsertTextFormat,
   TextDocumentPositionParams,
-  MarkupKind,
 } from "vscode-languageserver/node";
 
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CnfDirectives } from "../utils/constants";
+import { completionItems } from "../utils/documentation";
 import log from "../utils/log";
-
-function createImportCompletion(label: string): CompletionItem {
-  return {
-    label: label,
-    insertText: `${label} \${1:filepath}`,
-    insertTextFormat: InsertTextFormat.Snippet,
-    kind: CompletionItemKind.Method,
-    detail: "Include/import another conformance (*.cnf) file.",
-    documentation:
-      "This directive in the Asn2wrs conformation file is used" +
-      " to import external type definitions from another file.",
-  };
-}
-
-function createRenameCompletion(label: string, typename: string): CompletionItem {
-  return {
-    label: label,
-    insertText: label,
-    insertTextFormat: InsertTextFormat.Snippet,
-    kind: CompletionItemKind.Method,
-    detail: `Start block of renames for ${typename}.`,
-    documentation: `This directive in the Asn2wrs conformation file starts a block in which ${typename} can be renamed.`,
-  };
-}
 
 function createTodoMethodItem(label: string): CompletionItem {
   return {
@@ -56,35 +31,13 @@ function createTodoConstantItem(label: string): CompletionItem {
   };
 }
 
-function createRegistrationTypeItem(label: string, encodingType: string): CompletionItem {
-  return {
-    label: label,
-    kind: CompletionItemKind.Constant,
-    detail: `Register an item using ${encodingType} encoding.`,
-    documentation: {
-      kind: MarkupKind.Markdown,
-      value:
-        "This value should be used as the first argument in the `#.REGISTER` directive, " +
-        "just after specifying the field name. An example, assuming you're inside the " +
-        "`#.REGISTER` block:\n" +
-        `\`SomeName ${encodingType} "oid" "readable-text"\``,
-    },
-  };
-}
-
 /// List of completions that can be inserted in the document.
 const completions: CompletionItem[] = [
-  ...[CnfDirectives.IMPORT, CnfDirectives.INCLUDE].map(createImportCompletion),
-  ...[
-    { label: CnfDirectives.TYPE_RENAME, typename: "types" },
-    { label: CnfDirectives.FIELD_RENAME, typename: "fields" },
-    { label: CnfDirectives.TF_RENAME, typename: "types and fields" },
-  ].map(({ label, typename }) => createRenameCompletion(label, typename)),
+  ...completionItems,
   ...[
     CnfDirectives.END_OF_CNF,
     CnfDirectives.OPT,
     CnfDirectives.PDU,
-    CnfDirectives.REGISTER,
     CnfDirectives.MODULE,
     CnfDirectives.MODULE_IMPORT,
     CnfDirectives.OMIT_ASSIGNMENT,
@@ -130,18 +83,6 @@ const completions: CompletionItem[] = [
     "EXTERN",
     "NO_PROT_PREFIX",
   ].map(createTodoConstantItem),
-  ...[
-    { label: "N", encodingType: "NUM" },
-    { label: "NUM", encodingType: "NUM" },
-    { label: "S", encodingType: "STR" },
-    { label: "STR", encodingType: "STR" },
-    { label: "B", encodingType: "BER" },
-    { label: "BER", encodingType: "BER" },
-    { label: "P", encodingType: "PER" },
-    { label: "PER", encodingType: "PER" },
-    { label: "O", encodingType: "OER" },
-    { label: "OER", encodingType: "OER" },
-  ].map(({ label, encodingType }) => createRegistrationTypeItem(label, encodingType)),
 ];
 
 /// Returns a list of completion items for the given document and position. The list is based on the

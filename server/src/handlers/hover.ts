@@ -1,8 +1,8 @@
 import { TextDocuments, TextDocumentPositionParams, Hover } from "vscode-languageserver/node";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
-import log from "../utils/log";
 import { extractWordFromLine } from "../utils/textUtils";
+import { hoverItems } from "../utils/documentation";
 
 export function onHover(
   documents: TextDocuments<TextDocument>,
@@ -10,7 +10,6 @@ export function onHover(
 ): Hover {
   const document = documents.get(params.textDocument.uri);
   if (!document) {
-    log.write("[onHover] Document not found");
     return { contents: [] };
   }
 
@@ -18,13 +17,10 @@ export function onHover(
   const characterIndex = params.position.character;
   const word = extractWordFromLine(line, characterIndex);
 
-  const hoverContent = `You hovered over the word: ${word}`;
+  const hoverItem = hoverItems.get(word);
+  if (hoverItem) {
+    return hoverItem;
+  }
 
-  log.write(`[onHover] Hovered over the word: ${word}`);
-  return {
-    contents: {
-      kind: "markdown",
-      value: hoverContent,
-    },
-  };
+  return { contents: [] };
 }

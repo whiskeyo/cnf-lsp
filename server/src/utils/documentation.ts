@@ -56,7 +56,7 @@ const DirectiveTypeRename: Element = {
   kind: CompletionItemKind.Keyword,
   detail: "Rename a type.",
   documentation:
-    "`#.TYPE_RENAME` directive in the Asn2wrs conformation file is used" + " to rename a type.",
+    "`#.TYPE_RENAME` directive in the Asn2wrs conformation file is used to rename a type.",
 };
 
 const DirectiveFieldRename: Element = {
@@ -64,7 +64,7 @@ const DirectiveFieldRename: Element = {
   kind: CompletionItemKind.Keyword,
   detail: "Rename a field.",
   documentation:
-    "`#.FIELD_RENAME` directive in the Asn2wrs conformation file is used" + " to rename a field.",
+    "`#.FIELD_RENAME` directive in the Asn2wrs conformation file is used to rename a field.",
 };
 
 const DirectiveTFRename: Element = {
@@ -72,8 +72,39 @@ const DirectiveTFRename: Element = {
   kind: CompletionItemKind.Keyword,
   detail: "Rename a type or field.",
   documentation:
-    "`#.TF_RENAME` directive in the Asn2wrs conformation file is used" +
-    " to rename a type or field.",
+    "`#.TF_RENAME` directive in the Asn2wrs conformation file is used to rename a type or field.",
+};
+
+const DirectiveEnd: Element = {
+  label: CnfDirectives.END,
+  kind: CompletionItemKind.Keyword,
+  detail: "End of a directive block.",
+  documentation:
+    "`#.END` directive in the Asn2wrs conformation file is used to mark the end " +
+    "of a directive block. Its use is optional, as any other directive will also " +
+    "end the current block.",
+};
+
+const DirectiveEndOfCnf: Element = {
+  label: CnfDirectives.END_OF_CNF,
+  kind: CompletionItemKind.Keyword,
+  detail: "End of the conformance file.",
+  documentation:
+    "`#.END_OF_CNF` directive in the Asn2wrs conformation file is used to mark the end " +
+    "of the conformance file. It is used to indicate that the file has ended. " +
+    "Its use is optional, and rarely used overall.",
+};
+
+const DirectiveOpt: Element = {
+  label: CnfDirectives.OPT,
+  kind: CompletionItemKind.Keyword,
+  detail: "Set an asn2wrs compiler option.",
+  documentation:
+    "`#.OPT` directive in the Asn2wrs conformation file is used to set compiler options. " +
+    "List of all compiler options can be found in the `tools/asn2wrs.py`, but here is also the list: " +
+    "`-I`, `-b|BER|CER|DER`, `PER`, `OER`, `-p|PROTO`, `ALIGNED`, `-u|UNALIGNED`, `PROTO_ROOT_NAME`, " +
+    "`-d`, `-e`, `-S`, `GROUP_BY_PROT`, `-o`, `-O`, `-s`, `-k`, `-L`, `EMBEDDED_PDV_CB`, `EXTERNAL_TYPE_CB`, " +
+    "`-r`. List based on commit 67227be85ef7adc1a33357c3eb2a271bc704441b.",
 };
 
 function createConstantEncodingDetail(name: string, shortName: string): string {
@@ -177,44 +208,32 @@ function createHoverItem(element: Element): Hover {
   };
 }
 
-export const completionItems: CompletionItem[] = [
+const elements: Element[] = [
   // Directives
-  createCompletionItem(DirectiveRegister),
-  createCompletionItem(DirectiveImport),
-  createCompletionItem(DirectiveInclude),
-  createCompletionItem(DirectiveTypeRename),
-  createCompletionItem(DirectiveFieldRename),
-  createCompletionItem(DirectiveTFRename),
+  DirectiveRegister,
+  DirectiveImport,
+  DirectiveInclude,
+  DirectiveTypeRename,
+  DirectiveFieldRename,
+  DirectiveTFRename,
+  DirectiveEnd,
+  DirectiveEndOfCnf,
+  DirectiveOpt,
   // Constants
-  createCompletionItem(ConstantEncodingN),
-  createCompletionItem(ConstantEncodingNum),
-  createCompletionItem(ConstantEncodingS),
-  createCompletionItem(ConstantEncodingStr),
-  createCompletionItem(ConstantEncodingB),
-  createCompletionItem(ConstantEncodingBer),
-  createCompletionItem(ConstantEncodingP),
-  createCompletionItem(ConstantEncodingPer),
-  createCompletionItem(ConstantEncodingO),
-  createCompletionItem(ConstantEncodingOer),
+  ConstantEncodingN,
+  ConstantEncodingNum,
+  ConstantEncodingS,
+  ConstantEncodingStr,
+  ConstantEncodingB,
+  ConstantEncodingBer,
+  ConstantEncodingP,
+  ConstantEncodingPer,
+  ConstantEncodingO,
+  ConstantEncodingOer,
 ];
 
-export const hoverItems: Map<string, Hover> = new Map([
-  // Directives
-  [DirectiveRegister.label, createHoverItem(DirectiveRegister)],
-  [DirectiveImport.label, createHoverItem(DirectiveImport)],
-  [DirectiveInclude.label, createHoverItem(DirectiveInclude)],
-  [DirectiveTypeRename.label, createHoverItem(DirectiveTypeRename)],
-  [DirectiveFieldRename.label, createHoverItem(DirectiveFieldRename)],
-  [DirectiveTFRename.label, createHoverItem(DirectiveTFRename)],
-  // Constants
-  [ConstantEncodingN.label, createHoverItem(ConstantEncodingN)],
-  [ConstantEncodingNum.label, createHoverItem(ConstantEncodingNum)],
-  [ConstantEncodingS.label, createHoverItem(ConstantEncodingS)],
-  [ConstantEncodingStr.label, createHoverItem(ConstantEncodingStr)],
-  [ConstantEncodingB.label, createHoverItem(ConstantEncodingB)],
-  [ConstantEncodingBer.label, createHoverItem(ConstantEncodingBer)],
-  [ConstantEncodingP.label, createHoverItem(ConstantEncodingP)],
-  [ConstantEncodingPer.label, createHoverItem(ConstantEncodingPer)],
-  [ConstantEncodingO.label, createHoverItem(ConstantEncodingO)],
-  [ConstantEncodingOer.label, createHoverItem(ConstantEncodingOer)],
-]);
+export const completionItems: CompletionItem[] = elements.map(createCompletionItem);
+
+export const hoverItems: Map<string, Hover> = new Map(
+  elements.map((element) => [element.label, createHoverItem(element)]),
+);

@@ -1,23 +1,49 @@
 import {
   CompletionItem,
   CompletionItemKind,
+  DiagnosticSeverity,
   Hover,
   InsertTextFormat,
   MarkupKind,
 } from "vscode-languageserver/node";
 
-import { CnfDirectives, EncodingTypes } from "./constants";
+import {
+  allEncodingTypeStrings,
+  asn1EncodingTypeStrings,
+  CnfDirectives,
+  EncodingTypes,
+} from "./constants";
+import { doesStartWithUppercase } from "./textUtils";
 
-type Element = {
+type ElementDiagnosticCheck = {
+  tokenIndex: number;
+  severity: DiagnosticSeverity;
+  message: string;
+  checkFunction: (token: string) => boolean;
+};
+
+export enum ElementDiagnosticType {
+  HEADER,
+  BODY,
+}
+
+export type ElementDiagnostic = {
+  diagnosticType: ElementDiagnosticType;
+  expectedNumberOfTokens: number;
+  checkers: ElementDiagnosticCheck[];
+};
+
+export type Element = {
   label: string;
   kind: CompletionItemKind;
   detail: string;
   documentation: string;
   insertText?: string;
   insertTextFormat?: InsertTextFormat;
+  diagnostics?: ElementDiagnostic[]; // Added diagnostics property
 };
 
-const DirectiveRegister: Element = {
+export const DirectiveRegister: Element = {
   label: CnfDirectives.REGISTER,
   kind: CompletionItemKind.Keyword,
   detail: "Register a dissector for an object to an OID.",
@@ -27,6 +53,44 @@ const DirectiveRegister: Element = {
     "objects are frequently associated with an OID. In particular, some of the structures here " +
     "encode an OID in a field and then the content in a different field later, and how that field " +
     "is to be dissected depends on the previously seen OID.",
+  diagnostics: [
+    {
+      diagnosticType: ElementDiagnosticType.BODY,
+      expectedNumberOfTokens: 3,
+      checkers: [
+        {
+          tokenIndex: 0,
+          severity: DiagnosticSeverity.Warning,
+          message: "The first token should start with an uppercase letter.",
+          checkFunction: (token: string) => !doesStartWithUppercase(token),
+        } as ElementDiagnosticCheck,
+        {
+          tokenIndex: 1,
+          severity: DiagnosticSeverity.Error,
+          message: `Invalid encoding type! Please use one of ${asn1EncodingTypeStrings.join(", ")}.`,
+          checkFunction: (token: string) => !asn1EncodingTypeStrings.includes(token),
+        } as ElementDiagnosticCheck,
+      ],
+    },
+    {
+      diagnosticType: ElementDiagnosticType.BODY,
+      expectedNumberOfTokens: 4,
+      checkers: [
+        {
+          tokenIndex: 0,
+          severity: DiagnosticSeverity.Warning,
+          message: "The first token should start with an uppercase letter.",
+          checkFunction: (token: string) => !doesStartWithUppercase(token),
+        } as ElementDiagnosticCheck,
+        {
+          tokenIndex: 1,
+          severity: DiagnosticSeverity.Error,
+          message: `Invalid encoding type! Please use one of ${allEncodingTypeStrings.join(", ")}.`,
+          checkFunction: (token: string) => !allEncodingTypeStrings.includes(token),
+        } as ElementDiagnosticCheck,
+      ],
+    },
+  ],
 };
 
 const DirectiveImport: Element = {
@@ -57,6 +121,20 @@ const DirectiveTypeRename: Element = {
   detail: "Rename a type.",
   documentation:
     "`#.TYPE_RENAME` directive in the Asn2wrs conformation file is used to rename a type.",
+  diagnostics: [
+    {
+      diagnosticType: ElementDiagnosticType.BODY,
+      expectedNumberOfTokens: 2,
+      checkers: [
+        {
+          tokenIndex: 1,
+          severity: DiagnosticSeverity.Warning,
+          message: "Type name should always start with an uppercase letter.",
+          checkFunction: (token: string) => !doesStartWithUppercase(token),
+        } as ElementDiagnosticCheck,
+      ],
+    },
+  ],
 };
 
 const DirectiveFieldRename: Element = {
@@ -65,6 +143,20 @@ const DirectiveFieldRename: Element = {
   detail: "Rename a field.",
   documentation:
     "`#.FIELD_RENAME` directive in the Asn2wrs conformation file is used to rename a field.",
+  diagnostics: [
+    {
+      diagnosticType: ElementDiagnosticType.BODY,
+      expectedNumberOfTokens: 2,
+      checkers: [
+        {
+          tokenIndex: 1,
+          severity: DiagnosticSeverity.Warning,
+          message: "Field name should always start with a lowercase letter.",
+          checkFunction: (token: string) => doesStartWithUppercase(token),
+        } as ElementDiagnosticCheck,
+      ],
+    },
+  ],
 };
 
 const DirectiveTFRename: Element = {
@@ -208,7 +300,7 @@ function createHoverItem(element: Element): Hover {
   };
 }
 
-const elements: Element[] = [
+export const elements: Element[] = [
   // Directives
   DirectiveRegister,
   DirectiveImport,

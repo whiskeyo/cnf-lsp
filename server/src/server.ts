@@ -28,6 +28,11 @@ connection.onHover((params) => {
   return onHover(documents, params);
 });
 
+documents.onDidOpen((event) => {
+  log.write(`[onDidOpen] Document opened: ${event.document.uri}`);
+  onDocumentChange(connection, { document: event.document });
+});
+
 const onDidChangeContentDebounced = debounce(
   (change) => onDocumentChange(connection, change),
   debounceTimeout,

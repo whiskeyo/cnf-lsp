@@ -1,27 +1,94 @@
-import { Diagnostic, TextDocumentChangeEvent, Connection } from "vscode-languageserver/node";
+import {
+  Diagnostic,
+  TextDocumentChangeEvent,
+  Connection,
+  DiagnosticSeverity,
+} from "vscode-languageserver/node";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
-import { findBlocksOfText, splitTextIntoLines, BlockOfTextRange } from "../utils/textUtils";
-import { CnfDirectives } from "../utils/constants";
-import { validateRegisterEntries } from "./diagnostics/register";
-import { validateFieldRenames } from "./diagnostics/fieldRename";
-import { validateTypeRenames } from "./diagnostics/typeRename";
+import {
+  findBlocksOfText,
+  splitTextIntoLines,
+  BlockOfTextRange,
+  isBlockOfTextRangeValid,
+  stripComment,
+  changeWhitespacesToSingleSpace,
+  createRangeForToken,
+  createRangeForLine,
+} from "../utils/textUtils";
+import { Element, ElementDiagnosticType, elements } from "../utils/documentation";
 
-/// A block validator function type. It takes a block of text and returns diagnostics,
-/// if any are found. Made specifically for the validateAllBlocks function to simplify
-/// calling multiple validators.
-type BlockValidator = (lines: string[], blockOfTextRange: BlockOfTextRange) => Diagnostic[];
+import log from "../utils/log";
 
-function validateAllBlocks(
+function diagnoseBlock(
+  element: Element,
   lines: string[],
-  validators: [BlockValidator, string, string][],
+  blockOfTextRange: BlockOfTextRange,
 ): Diagnostic[] {
   const diagnostics: Diagnostic[] = [];
 
-  for (const [validator, startMarker, endMarker] of validators) {
-    const blocks = findBlocksOfText(startMarker, endMarker, lines);
+  if (!element.diagnostics) {
+    return diagnostics;
+  }
+
+  if (!isBlockOfTextRangeValid(blockOfTextRange)) {
+    return diagnostics;
+  }
+
+  const block = lines
+    .slice(blockOfTextRange.start + 1, blockOfTextRange.end)
+    .map((line) => stripComment(line, "#"))
+    .map(changeWhitespacesToSingleSpace);
+
+  for (let i = 0; i < block.length; i++) {
+    log.write(`Diagnosing line ==> ${block[i]}`);
+    if (block[i].trim() === "") {
+      continue;
+    }
+
+    const tokens = block[i].split(" ");
+
+    let hasDiagnosed = false;
+    element.diagnostics?.forEach((diag) => {
+      if (
+        diag.diagnosticType === ElementDiagnosticType.BODY &&
+        tokens.length === diag.expectedNumberOfTokens
+      ) {
+        diag.checkers.forEach((checker) => {
+          if (checker.checkFunction(tokens[checker.tokenIndex])) {
+            diagnostics.push({
+              severity: checker.severity,
+              range: createRangeForToken(block, blockOfTextRange, i, tokens[checker.tokenIndex]),
+              message: checker.message,
+              source: "cnf-lsp",
+            });
+          }
+        });
+        hasDiagnosed = true;
+      }
+    });
+
+    if (!hasDiagnosed) {
+      diagnostics.push({
+        severity: DiagnosticSeverity.Error,
+        range: createRangeForLine(block, blockOfTextRange, i),
+        message: `Invalid ${element.label} entry.`,
+        source: "cnf-lsp",
+      });
+    }
+  }
+
+  return diagnostics;
+}
+
+function diagnoseAllBlocks(lines: string[]) {
+  const diagnostics: Diagnostic[] = [];
+  const nextDirectiveStart = "#.";
+
+  for (const element of elements) {
+    const blocks = findBlocksOfText(element.label, nextDirectiveStart, lines);
     for (const block of blocks) {
-      diagnostics.push(...validator(lines, block));
+      diagnostics.push(...diagnoseBlock(element, lines, block));
     }
   }
 
@@ -36,13 +103,6 @@ export function onDocumentChange(
   change: TextDocumentChangeEvent<TextDocument>,
 ) {
   const lines = splitTextIntoLines(change.document.getText());
-  const nextDirectiveStart = "#.";
-
-  const diagnostics: Diagnostic[] = validateAllBlocks(lines, [
-    [validateRegisterEntries, CnfDirectives.REGISTER, nextDirectiveStart],
-    [validateFieldRenames, CnfDirectives.FIELD_RENAME, nextDirectiveStart],
-    [validateTypeRenames, CnfDirectives.TYPE_RENAME, nextDirectiveStart],
-  ]);
-
+  const diagnostics: Diagnostic[] = diagnoseAllBlocks(lines);
   connection.sendDiagnostics({ uri: change.document.uri, diagnostics });
 }

@@ -37,6 +37,7 @@ OldName newName
 ################################################################################
 #.FIELD_RENAME
 AARQ-apdu/_untag/user-information	aARQ_user_information
+field_rename SecondArgStartingUppercase
 #comment
 dsadas UppercaseType andExtraArgument # this should cause 2 warnings
 
@@ -77,6 +78,7 @@ AccessPoint
 # #.REGISTER DIRECTIVE                                                         #
 ################################################################################
 #.REGISTER
+failrue here
 AsymmetricKeyPackage B "2.16.840.1.101.2.1.2.78.5" "id-ct-KP-aKeyPackage"
 AsymmetricKeyPackage P "2.16.840.1.101.2.1.2.78.5"
 AsymmetricKeyPackage OER "2.16.840.1.101.2.1.2.78.5" # comment
@@ -84,6 +86,7 @@ AsymmetricKeyPackage B "2.16.840.1.101.2.1.2.78.5"
 someLowerCaseType B "123" "456"
 ModificationParameter	S dop.oid	"modify.roleb.2.5.19.1" # comment
 #comment
+Xyz AAAAAAAAA "ddd" "eee"
 ModificationParameter	S dop.oid "???"
 ModificationParameter	S dop.oid # comment
 ModificationParameter	S dop.oid
@@ -93,6 +96,7 @@ AsymmetricKeyPackage X "2.16.840.1.101.2.1.2.78.5" # unknown encoding
 
 #.REGISTER
 Dsa dsadas dsadas dsadsa
+dsadsa X dss
 
 ################################################################################
 # #.MODULE DIRECTIVE                                                           #

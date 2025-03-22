@@ -90,3 +90,21 @@ export function createRangeForLine(
     Position.create(blockOfTextRange.start + lineIdx + 1, lines[lineIdx].length),
   );
 }
+
+export function extractWordFromLine(line: string, characterIndex: number): string {
+  if (line.length === 0 || characterIndex < 0 || characterIndex >= line.length) {
+    return "";
+  }
+
+  let start = characterIndex;
+  while (start > 0 && /[\w.#]/.test(line.charAt(start - 1))) {
+    start--;
+  }
+
+  let end = characterIndex;
+  while (end < line.length && /[\w.#]/.test(line.charAt(end))) {
+    end++;
+  }
+
+  return line.substring(start, end);
+}

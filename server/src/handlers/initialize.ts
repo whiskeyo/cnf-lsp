@@ -12,6 +12,7 @@ export function onInitialize(params: InitializeParams): InitializeResult {
       completionProvider: {
         resolveProvider: true,
       },
+      hoverProvider: true,
     },
   } as InitializeResult;
 }
